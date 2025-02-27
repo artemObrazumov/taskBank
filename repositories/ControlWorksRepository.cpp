@@ -11,9 +11,6 @@ std::vector<ControlWork> ControlWorksRepository::getControlWorks() {
     sqlite3_stmt* stmt;
     std::vector<ControlWork> works;
 
-    for (int i = 0; i < 60; ++i) {
-        works.emplace_back(ControlWork(i , "test " + std::to_string(i), 100, 2));
-    }
     if (sqlite3_prepare(this->db.sqliteptr, sql, 0, &stmt, nullptr) == SQLITE_OK) {
         while (sqlite3_step(stmt) == SQLITE_ROW) {
             int id = sqlite3_column_int(stmt, 0);

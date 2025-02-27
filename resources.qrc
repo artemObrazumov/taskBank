@@ -10,5 +10,6 @@
         <file>image/cross.svg</file>
         <file>image/plus.svg</file>
         <file>qml/AddProjectWindow.qml</file>
+        <file>image/openedbook.svg</file>
     </qresource>
 </RCC>

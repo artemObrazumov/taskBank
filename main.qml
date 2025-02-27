@@ -182,10 +182,27 @@ ApplicationWindow {
             }
         }
 
-        Text {
-            visible: repository.test.length === 0
-            text: "Нет контрольных работ."
-            font.pointSize: 20
+        Rectangle {
+            height: bookImage.height + noWorksText.height + 32
+            anchors.centerIn: parent
+            color: "#fff"
+            Image {
+                id: bookImage
+                source: "qrc:/image/openedbook.svg"
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+            Text {
+                id: noWorksText
+                visible: repository.test.length === 0
+                text: "Нет контрольных работ."
+                font.family: montserratMedium.name
+                font.weight: 600
+                font.pointSize: 24
+                anchors.bottom: parent.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "#6B7280"
+            }
         }
     }
 
@@ -234,7 +251,6 @@ ApplicationWindow {
         id: newProjectWindow
         onWindowClosed: {
             isAddProjectWindowOpened = false;
-            //repository.createControlWork();
         }
     }
 }
