@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>font/Montserrat-Regular.ttf</file>
+        <file>font/Montserrat-Bold.ttf</file>
+        <file>font/Montserrat-Italic.ttf</file>
+        <file>font/Montserrat-BoldItalic.ttf</file>
+        <file>font/Montserrat-Medium.ttf</file>
+        <file>image/tasks.svg</file>
+        <file>image/variants.svg</file>
+        <file>image/cross.svg</file>
+        <file>image/plus.svg</file>
+        <file>qml/AddProjectWindow.qml</file>
+    </qresource>
+</RCC>
