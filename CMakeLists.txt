@@ -20,12 +20,13 @@ qt_add_qml_module(taskBank
     URI path
     VERSION 1.0
     QML_FILES main.qml
-    SOURCES common/database.h common/database.cpp
+    SOURCES nlohmann/json.hpp
     SOURCES repositories/ControlWorksRepository.h repositories/ControlWorksRepository.cpp
     SOURCES models/controlwork.h
     SOURCES component/controlworkscomponent.h component/controlworkscomponent.cpp
     QML_FILES qml/Container.qml qml/AddProjectWindow.qml
     RESOURCES resources.qrc
+    SOURCES
 )
 
 target_link_libraries(taskBank

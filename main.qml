@@ -89,19 +89,22 @@ ApplicationWindow {
 
                     GridLayout {
                         id: sidebarGrid
-                        width: parent.width
+                        width: contentColumn.width
                         Layout.margins: 18
                         columns: requiredColumns
                         columnSpacing: 18
                         rowSpacing: 18
 
                         readonly property int requiredColumns: 3
+                        property int itemWidth: (contentColumn.width - 36 - 36 - 120) / 3
 
                         Repeater {
                             model: repository.test
 
                             Container {
+                                implicitWidth: sidebarGrid.itemWidth + 40
                                 implicitHeight: workContent.height
+                                Layout.alignment: Qt.AlignLeft | Qt.AlignTop
 
                                 Item {
                                     id: workContent
@@ -132,29 +135,41 @@ ApplicationWindow {
 
                                         Text {
                                             id: title
-                                            text: "Алгебра: аоаоываываываываыввыао" //modelData.title
+                                            text: modelData.title
                                             font.family: montserratMedium.name
                                             font.weight: 700
                                             font.pixelSize: 18
                                             Layout.bottomMargin: 12
+                                            Layout.preferredWidth: sidebarGrid.itemWidth - 36
                                             elide: Text.ElideRight
                                             color: "#fff"
                                         }
                                         Text {
-                                            text: "Последнее изменение: 15.03.2024" + title.width
+                                            visible: modelData.isValid
+                                            text: "Последнее изменение: " + modelData.lastEdited
                                             font.family: montserratRegular.name
                                             font.pixelSize: 16
                                             font.weight: 500
                                             Layout.bottomMargin: 12
                                             color: "#9CA3AF"
                                         }
+                                        Text {
+                                            visible: !modelData.isValid
+                                            text: "Ошибка: проект поврежден"
+                                            font.family: montserratRegular.name
+                                            font.pixelSize: 16
+                                            font.weight: 500
+                                            Layout.bottomMargin: 12
+                                            color: "red"
+                                        }
                                         RowLayout {
+                                            visible: modelData.isValid
                                             Image {
                                                 source: "qrc:/image/tasks.svg"
                                                 Layout.rightMargin: 6
                                             }
                                             Text {
-                                                text: "12 заданий"
+                                                text: "Заданий: " + modelData.tasks
                                                 font.family: montserratRegular.name
                                                 font.pixelSize: 16
                                                 font.weight: 500
@@ -166,7 +181,7 @@ ApplicationWindow {
                                                 Layout.rightMargin: 6
                                             }
                                             Text {
-                                                text: "24 варианта"
+                                                text: "Вариантов: " + modelData.tasks
                                                 font.family: montserratRegular.name
                                                 font.pixelSize: 16
                                                 font.weight: 500
@@ -183,8 +198,9 @@ ApplicationWindow {
         }
 
         Rectangle {
+            visible: repository.test.length === 0
             height: bookImage.height + noWorksText.height + 32
-            anchors.centerIn: parent
+            Layout.alignment: Qt.AlignCenter
             color: "#fff"
             Image {
                 id: bookImage
@@ -194,7 +210,6 @@ ApplicationWindow {
             }
             Text {
                 id: noWorksText
-                visible: repository.test.length === 0
                 text: "Нет контрольных работ."
                 font.family: montserratMedium.name
                 font.weight: 600

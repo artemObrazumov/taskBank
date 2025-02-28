@@ -10,10 +10,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<ControlWorksComponent>("components.controlWorks", 1, 0, "ControlWorksComponent");
 
     QQmlApplicationEngine engine;
-    engine.rootContext()->setContextProperty("applicationDirPath", QGuiApplication::applicationDirPath());
-
-    const QUrl url("qrc:/path/main.qml"); // ссылка на файл qml
-    engine.load(url);   // загружаем файл qml
+    const QUrl url("qrc:/path/main.qml");
+    engine.load(url);
 
     return app.exec();
 }

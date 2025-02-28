@@ -11,5 +11,6 @@
         <file>image/plus.svg</file>
         <file>qml/AddProjectWindow.qml</file>
         <file>image/openedbook.svg</file>
+        <file>qml/ProjectEditorWindow.qml</file>
     </qresource>
 </RCC>

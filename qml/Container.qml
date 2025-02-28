@@ -4,7 +4,6 @@ import QtQuick.Layouts 1.15
 
 Rectangle {
     id: wrapper
-    Layout.fillWidth: true
     color: bgColor
     radius: 8
 

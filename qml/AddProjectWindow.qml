@@ -285,9 +285,9 @@ Window {
 
                         onClicked: {
                             addProjectWindow.close()
-                            repository.createControlWork(controlWorkTitleField.text.toString(), folderText.text.toString())
-                            console.log(folderText.text)
-                            console.log(controlWorkTitleField.text)
+                            windowClosed(
+                                repository.createControlWork(controlWorkTitleField.text.toString(), folderText.text.toString())
+                            )
                         }
                     }
 

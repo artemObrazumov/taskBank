@@ -1,4 +1,7 @@
 #include "controlworkscomponent.h"
+#include <ctime>
+#include <iomanip>
+#include <sstream>
 
 ControlWorksComponent::ControlWorksComponent() {
     getControlWorksList();
@@ -13,6 +16,12 @@ Q_INVOKABLE QList<QVariantMap> ControlWorksComponent::getControlWorksList() {
         QVariantMap workMap;
         workMap["id"] = work.id;
         workMap["title"] = QString::fromStdString(work.title);
+        workMap["tasks"] = work.tasks;
+        workMap["variants"] = work.variants;
+        workMap["isValid"] = work.isValid;
+        std::stringstream dateStream;
+        dateStream << std::put_time(std::localtime(&work.lastEdited), "%d.%m.%Y");
+        workMap["lastEdited"] = QString::fromStdString(dateStream.str());
         worksList.append(workMap);
     }
 
