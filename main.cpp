@@ -1,6 +1,7 @@
 #include "component/ControlWorksComponent.h"
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QStandardItemModel>
 #include <QQmlContext>
 
 int main(int argc, char *argv[])

@@ -1,7 +1,6 @@
 #ifndef CONTROLWORKSREPOSITORY_H
 #define CONTROLWORKSREPOSITORY_H
 
-#include <QObject>
 #include <sqlite3.h>
 #include "../models/controlwork.h"
 

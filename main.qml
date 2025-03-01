@@ -145,7 +145,7 @@ ApplicationWindow {
                                             color: "#fff"
                                         }
                                         Text {
-                                            visible: modelData.isValid
+                                            opacity: if (modelData.isValid) {1} else {0}
                                             text: "Последнее изменение: " + modelData.lastEdited
                                             font.family: montserratRegular.name
                                             font.pixelSize: 16
@@ -153,17 +153,8 @@ ApplicationWindow {
                                             Layout.bottomMargin: 12
                                             color: "#9CA3AF"
                                         }
-                                        Text {
-                                            visible: !modelData.isValid
-                                            text: "Ошибка: проект поврежден"
-                                            font.family: montserratRegular.name
-                                            font.pixelSize: 16
-                                            font.weight: 500
-                                            Layout.bottomMargin: 12
-                                            color: "red"
-                                        }
                                         RowLayout {
-                                            visible: modelData.isValid
+                                            opacity: if (modelData.isValid) {1} else {0}
                                             Image {
                                                 source: "qrc:/image/tasks.svg"
                                                 Layout.rightMargin: 6
@@ -188,6 +179,16 @@ ApplicationWindow {
                                                 color: "#D1D5DB"
                                             }
                                         }
+                                    }
+                                    Text {
+                                        visible: !modelData.isValid
+                                        text: "Ошибка: проект поврежден"
+                                        font.family: montserratRegular.name
+                                        font.pixelSize: 16
+                                        font.weight: 500
+                                        anchors.bottom: parent.bottom
+                                        anchors.bottomMargin: 40
+                                        color: "red"
                                     }
                                 }
                             }
@@ -267,5 +268,9 @@ ApplicationWindow {
         onWindowClosed: {
             isAddProjectWindowOpened = false;
         }
+    }
+
+    ProjectEditorWindow {
+
     }
 }
