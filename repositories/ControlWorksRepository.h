@@ -1,12 +1,15 @@
 #ifndef CONTROLWORKSREPOSITORY_H
 #define CONTROLWORKSREPOSITORY_H
 
-#include <sqlite3.h>
 #include "../models/controlwork.h"
+#include "databases/controlworkdatabase.h"
+#include "utils/controlworkmetadataeditor.h"
 
 class ControlWorksRepository {
 private:
-    sqlite3* database;
+
+    ControlWorkDatabase database;
+    ControlWorkMetadataEditor metadataEditor;
 public:
 
     ControlWorksRepository();
@@ -14,7 +17,6 @@ public:
 
     std::vector<ControlWork> getControlWorks();
     unsigned int createControlWork(std::string title, std::string path);
-    void validateControlWork(ControlWork &work);
     void updateControlWorkTitle(int id, std::string newTitle);
 };
 

@@ -27,6 +27,10 @@ qt_add_qml_module(taskBank
     QML_FILES qml/Container.qml qml/AddProjectWindow.qml qml/ProjectEditorWindow.qml
     RESOURCES resources.qrc
     SOURCES repositories/controlworkeditorrepository.h repositories/controlworkeditorrepository.cpp
+    SOURCES models/task.h
+    SOURCES Constants.h
+    SOURCES databases/controlworkdatabase.h databases/controlworkdatabase.cpp
+    SOURCES utils/controlworkmetadataeditor.h utils/controlworkmetadataeditor.cpp
 )
 
 target_link_libraries(taskBank

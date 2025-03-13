@@ -7,17 +7,18 @@
 class controlWorkEditorRepository
 {
 private:
+
     sqlite3* database;
-    ControlWork* openedWork;
+    ControlWork* work;
     int workId;
 
     void loadControlWork();
+    std::string loadControlWorkPath();
+    void loadMetadata();
 public:
 
-    controlWorkEditorRepository();
+    controlWorkEditorRepository(int workId);
     ~controlWorkEditorRepository();
-
-    void initializeRepository(int id);
 };
 
 #endif // CONTROLWORKEDITORREPOSITORY_H
