@@ -29,7 +29,7 @@ ControlWork* ControlWorkDatabase::getControlWorkFromDatabase(int id) {
             work = new ControlWork(id, reinterpret_cast<const char*>(title), reinterpret_cast<const char*>(path));
         }
     } else {
-        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(database) << std::endl;
+        std::cerr << "Ошибка: " << sqlite3_errmsg(database) << std::endl;
     }
 
     sqlite3_finalize(stmt);
@@ -51,7 +51,7 @@ std::vector<ControlWork> ControlWorkDatabase::getControlWorksFromDatabase() {
             works.emplace_back(work);
         }
     } else {
-        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(database) << std::endl;
+        std::cerr << "Ошибка: " << sqlite3_errmsg(database) << std::endl;
     }
 
     sqlite3_finalize(stmt);
@@ -68,12 +68,12 @@ int ControlWorkDatabase::createControlWork(std::string title, std::string path) 
         sqlite3_bind_text(stmt, 2, path.c_str(), -1, SQLITE_STATIC);
 
         if (sqlite3_step(stmt) != SQLITE_DONE) {
-            std::cerr << "Execution failed: " << sqlite3_errmsg(database) << std::endl;
+            std::cerr << "Ошибка: " << sqlite3_errmsg(database) << std::endl;
         } else {
             id = sqlite3_last_insert_rowid(database);
         }
     } else {
-        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(database) << std::endl;
+        std::cerr << "Ошибка: " << sqlite3_errmsg(database) << std::endl;
     }
 
     sqlite3_finalize(stmt);

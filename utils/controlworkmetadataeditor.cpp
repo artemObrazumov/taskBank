@@ -1,27 +1,45 @@
 #include "controlworkmetadataeditor.h"
 #include <iostream>
 #include <nlohmann/json.hpp>
-#include <fstream>
 #include "../Constants.h"
 
 ControlWorkMetadataEditor::ControlWorkMetadataEditor() {}
 
-void ControlWorkMetadataEditor::validateControlWork(ControlWork &work) {
+bool ControlWorkMetadataEditor::writableMetadataFile(ControlWork &work, std::ofstream &file) {
+    std::string metadataPath = work.path + "/" + work.title + "/" + METADATA_FILE_NAME;
+    if (!file.is_open()) {
+        std::cerr << "Ошибка при открытии файла " << metadataPath << std::endl;
+        return false;
+    }
+    work.isValid = true;
+    return true;
+}
+
+bool ControlWorkMetadataEditor::readableMetadataFile(ControlWork &work, std::ifstream &file) {
     std::string metadataPath = work.path + "/" + work.title + "/" + METADATA_FILE_NAME;
 
-    std::ifstream file(metadataPath);
+    file.open(metadataPath);
     if (!file.is_open()) {
-        std::cerr << "Failed to open file for reading." << std::endl;
+        std::cerr << "Ошибка при открытии файла " << metadataPath << std::endl;
         work.isValid = false;
+        return false;
+    }
+    return true;
+}
+
+void ControlWorkMetadataEditor::validateControlWork(ControlWork &work) {
+    std::ifstream file;
+    if (readableMetadataFile(work, file) == false) {
         return;
     }
-    nlohmann::json data;
-    file >> data;
+    nlohmann::json metadata;
+    file >> metadata;
+    file.close();
 
-    work.title = data["title"];
-    work.tasks = data["tasks"];
-    work.variants = data["variants"];
-    work.lastEdited = data["lastEdited"];
+    work.title = metadata["title"];
+    work.tasks = metadata["tasks"];
+    work.variants = metadata["variants"];
+    work.lastEdited = metadata["lastEdited"];
     work.isValid = true;
 }
 
@@ -30,11 +48,11 @@ bool ControlWorkMetadataEditor::createControlWorkMetadata(std::string title, std
     try {
         bool created = std::filesystem::create_directory(projectFolderPath);
         if (!created) {
-            std::cerr << "Directory already exists or could not be created." << std::endl;
+            std::cerr << "Ошибка при создании директории " << projectFolderPath << std::endl;
             return false;
         }
     } catch (const std::filesystem::filesystem_error& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+        std::cerr << "Ошибка: " << e.what() << std::endl;
         return false;
     }
 
@@ -44,14 +62,25 @@ bool ControlWorkMetadataEditor::createControlWorkMetadata(std::string title, std
     metadata["variants"] = 0;
     metadata["lastEdited"] = static_cast<long>(std::time(nullptr));
 
-    std::string metadataPath = projectFolderPath + "/" + METADATA_FILE_NAME;
-    std::ofstream file(metadataPath);
-    if (!file.is_open()) {
-        std::cerr << "Failed to open file for writing." << std::endl;
-        return false;
-    }
+    std::ofstream file;
+    ControlWork work(title, path);
+    writableMetadataFile(work, file);
     file << metadata.dump(4);
     file.close();
 
     return true;
+}
+
+bool ControlWorkMetadataEditor::incrementTaskCount(ControlWork &work) {
+    std::ifstream readableFile;
+    readableMetadataFile(work, readableFile);
+    nlohmann::json metadata;
+    readableFile >> metadata;
+    readableFile.close();
+
+    metadata["tasks"] = metadata["tasks"].get<int>() + 1;
+
+    std::ofstream writableFile;
+    writableFile << metadata.dump(4);
+    writableFile.close();
 }

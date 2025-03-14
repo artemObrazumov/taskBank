@@ -4,15 +4,20 @@ controlWorkEditorRepository::controlWorkEditorRepository(int workId): workId(wor
     loadControlWork();
 }
 
-void controlWorkEditorRepository::loadMetadata() {
-}
-
 void controlWorkEditorRepository::loadControlWork() {
-
-    loadMetadata();
+    this->work = database.getControlWorkFromDatabase(this->workId);
+    metadataEditor.validateControlWork(*this->work);
 }
 
-std::string controlWorkEditorRepository::loadControlWorkPath() {
-    const char* sql = "SELECT * FROM control_works;";
-    sqlite3_stmt* stmt;
+int controlWorkEditorRepository::addTaskGroup() {
+    int id = content.addTaskGroupToDatabase();
+    if(metadataEditor.incrementTaskCount(*this->work)) {
+        return id;
+    } else {
+        return -1;
+    }
+}
+
+int controlWorkEditorRepository::addTask(int groupId) {
+
 }

@@ -18,6 +18,9 @@ struct ControlWork
     ControlWork(int id, const std::string& title, const std::string& path)
         : id(id), title(title), path(path) {}
 
+    ControlWork(std::string title, std::string path)
+        : title(title), path(path) {}
+
     bool isValid;
 };
 
