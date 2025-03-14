@@ -11,7 +11,7 @@ private:
     sqlite3* database;
 public:
 
-    ControlWorkContentDatabase();
+    ControlWorkContentDatabase(ControlWork &work);
     ~ControlWorkContentDatabase();
 
     std::vector<TaskGroup> getTaskGroupsFromDatabase();

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import components.controlWorkEditor
 
 ApplicationWindow {
     visible: true
@@ -12,6 +13,11 @@ ApplicationWindow {
     property int tab: 0
     property int selectedTaskId: -1
     property int selectedVariantId: -1
+
+    ControlWorkEditorComponent {
+        id: editorComponent
+        workId: 2
+    }
 
     FontLoader {
         id: montserratRegular
@@ -90,7 +96,7 @@ ApplicationWindow {
                 font.family: montserratMedium.name
                 font.pointSize: 18
                 font.weight: 700
-                text: "Название работы работы работы работы работы работы"
+                text: editorComponent.controlWork.title
                 elide: Text.ElideRight
                 anchors.left: parent.left
                 anchors.right: parent.right
@@ -204,7 +210,7 @@ ApplicationWindow {
 
             ListView {
                 anchors.fill: parent
-                model: tasksModel
+                model: editorComponent.taskGroups
                 clip: true
                 delegate: Item {
                     width: parent.width
@@ -229,17 +235,17 @@ ApplicationWindow {
 
                                 Image {
                                     source: "qrc:/image/openIndicator.svg"
-                                    rotation: if (show) { 0 } else { -90 }
+                                    rotation: if (modelData.show) { 0 } else { -90 }
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
 
                                 Text {
                                     id: taskTitle
-                                    text: title
+                                    text: "Задание " + modelData.index
                                     font.family: montserratRegular.name
                                     font.weight: 500
                                     font.pointSize: 16
-                                    color: if (show) { "#fff" } else { "#6B7280" }
+                                    color: if (modelData.show) { "#fff" } else { "#6B7280" }
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
 
@@ -256,12 +262,12 @@ ApplicationWindow {
                                 }
 
                                 onExited: {
-                                    if (show) return;
+                                    if (modelData.show === true) return;
                                     parent.color = "transparent";
                                 }
 
                                 onClicked: {
-                                    model.show = !model.show;
+                                    editorComponent.toggleGroupShow(modelData.id);
                                 }
                             }
                         }
@@ -269,17 +275,17 @@ ApplicationWindow {
                         Item {
                             width: parent.width
                             height: 8
-                            visible: show
+                            visible: modelData.show
                         }
 
                         Repeater {
                             id: taskVariantsList
-                            model: taskVariants
+                            model: modelData.taskVariants
                             Layout.topMargin: 8
                             delegate: Rectangle {
                                 width: parent.width + 16
                                 height: taskVariantTitle.height + 16
-                                visible: show
+                                visible: modelData.show
                                 radius: 4
                                 anchors.left: parent.left
                                 anchors.right: parent.right
@@ -289,7 +295,7 @@ ApplicationWindow {
 
                                 Text {
                                     id: taskVariantTitle
-                                    text: title
+                                    text: modelData.content
                                     anchors.left: parent.left
                                     anchors.right: parent.right
                                     anchors.margins: 8
@@ -297,7 +303,7 @@ ApplicationWindow {
                                     font.family: montserratRegular.name
                                     font.weight: 500
                                     font.pointSize: 16
-                                    color: if (selectedTaskId == taskId) { "#fff" } else { "#6B7280" }
+                                    color: if (selectedTaskId === modelData.taskId) { "#fff" } else { "#6B7280" }
                                 }
 
                                 MouseArea {
@@ -315,7 +321,7 @@ ApplicationWindow {
                                     }
 
                                     onClicked: {
-                                        selectedTaskId = taskId;
+                                        selectedTaskId = modelData.taskId;
                                     }
                                 }
                             }
@@ -324,7 +330,7 @@ ApplicationWindow {
                         Item {
                             width: parent.width
                             height: 8
-                            visible: show
+                            visible: modelData.show
                         }
                     }
                 }

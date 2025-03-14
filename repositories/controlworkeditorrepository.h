@@ -13,7 +13,7 @@ class controlWorkEditorRepository
 private:
 
     ControlWorkDatabase database;
-    ControlWorkContentDatabase content;
+    ControlWorkContentDatabase* content = nullptr;
     ControlWorkMetadataEditor metadataEditor;
     ControlWork* work;
     std::vector<TaskGroup> groups;
@@ -27,6 +27,12 @@ public:
 
     int addTaskGroup();
     int addTask(int groupId);
+    ControlWork* getControlWork() {
+        return work;
+    }
+    std::vector<TaskGroup> getTaskGroups() {
+        return groups;
+    }
 };
 
 #endif // CONTROLWORKEDITORREPOSITORY_H

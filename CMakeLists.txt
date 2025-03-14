@@ -34,6 +34,7 @@ qt_add_qml_module(taskBank
     SOURCES
     SOURCES models/taskgroup.h
     SOURCES databases/controlworkcontentdatabase.h databases/controlworkcontentdatabase.cpp
+    SOURCES component/controlworkeditorcomponent.h component/controlworkeditorcomponent.cpp
 )
 
 target_link_libraries(taskBank

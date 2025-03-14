@@ -7,10 +7,12 @@ controlWorkEditorRepository::controlWorkEditorRepository(int workId): workId(wor
 void controlWorkEditorRepository::loadControlWork() {
     this->work = database.getControlWorkFromDatabase(this->workId);
     metadataEditor.validateControlWork(*this->work);
+    content = new ControlWorkContentDatabase(*this->work);
+    groups = content->getTaskGroupsFromDatabase();
 }
 
 int controlWorkEditorRepository::addTaskGroup() {
-    int id = content.addTaskGroupToDatabase();
+    int id = content->addTaskGroupToDatabase();
     if(metadataEditor.incrementTaskCount(*this->work)) {
         return id;
     } else {
@@ -19,5 +21,5 @@ int controlWorkEditorRepository::addTaskGroup() {
 }
 
 int controlWorkEditorRepository::addTask(int groupId) {
-
+    return content->addTaskToDatabase(groupId);
 }

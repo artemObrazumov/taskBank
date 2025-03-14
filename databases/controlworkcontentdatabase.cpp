@@ -2,8 +2,8 @@
 #include "Constants.h"
 #include <iostream>
 
-ControlWorkContentDatabase::ControlWorkContentDatabase() {
-    sqlite3_open(CONTROL_WORK_CONTENT_DATABASE.c_str(), &database);
+ControlWorkContentDatabase::ControlWorkContentDatabase(ControlWork &work) {
+    sqlite3_open((work.path + "/" + work.title + "/" + CONTROL_WORK_CONTENT_DATABASE).c_str(), &database);
     const char* sql = "CREATE TABLE task_groups (id INTEGER PRIMARY KEY AUTOINCREMENT); CREATE TABLE tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, groupId INTEGER NOT NULL,content TEXT NOT NULL,answer TEXT NOT NULL,FOREIGN KEY (groupId) REFERENCES task_groups(id) ON DELETE CASCADE);";
     sqlite3_exec(database, sql, nullptr, nullptr, nullptr);
 }
@@ -40,8 +40,10 @@ std::vector<TaskGroup> ControlWorkContentDatabase::getTaskGroupsFromDatabase() {
                 lastGroupId = groupId;
             }
 
-            taskGroups.back().tasks.emplace_back(Task(taskId,
-                reinterpret_cast<const char*>(content), reinterpret_cast<const char*>(answer)));
+            if (content and answer) {
+                taskGroups.back().tasks.emplace_back(Task(taskId,
+                    reinterpret_cast<const char*>(content), reinterpret_cast<const char*>(answer)));
+            }
         }
     }
 
