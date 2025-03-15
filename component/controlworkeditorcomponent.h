@@ -1,45 +1,55 @@
 #ifndef CONTROLWORKEDITORCOMPONENT_H
 #define CONTROLWORKEDITORCOMPONENT_H
 
+#include "component/utils/taskgroupsmodel.h"
 #include "repositories/controlworkeditorrepository.h"
 #include <QObject>
 #include <QVariantList>
+#include <QtCore/qabstractitemmodel.h>
 
 class ControlWorkEditorComponent : public QObject {
     Q_OBJECT
     Q_PROPERTY(int workId READ workId WRITE setWorkId NOTIFY workIdChanged)
     Q_PROPERTY(QVariantMap controlWork READ controlWork NOTIFY controlWorkChanged)
-    Q_PROPERTY(QList<QVariantMap> taskGroups READ taskGroups NOTIFY taskGroupsChanged)
+    Q_PROPERTY(TaskGroupModel* taskGroups READ taskGroups CONSTANT)
 
 private:
 
     controlWorkEditorRepository* repository = nullptr;
     int _workId;
     QVariantMap _controlWork;
-    QList<QVariantMap> _taskGroups;
     void loadControlWork();
+    TaskGroupModel _taskGroups;
 
 public:
 
     ControlWorkEditorComponent();
     ~ControlWorkEditorComponent();
+
     int workId() {
         return _workId;
     }
+
     QVariantMap controlWork() {
         return _controlWork;
     }
+
     void setWorkId(const int& workId) {
         if (_workId != workId) {
             _workId = workId;
             loadControlWork();
         }
     }
-    QList<QVariantMap> taskGroups() {
-        return _taskGroups;
+
+    TaskGroupModel* taskGroups() {
+        return &_taskGroups;
     }
 
-    Q_INVOKABLE void toggleGroupShow(int groupId);
+    Q_INVOKABLE void addTaskGroup();
+
+    Q_INVOKABLE void addTaskToGroup(int groupId);
+
+    Q_INVOKABLE void deleteTask(int groupId, int taskId);
 
 protected:
 

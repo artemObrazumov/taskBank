@@ -7,6 +7,7 @@ ControlWorkMetadataEditor::ControlWorkMetadataEditor() {}
 
 bool ControlWorkMetadataEditor::writableMetadataFile(ControlWork &work, std::ofstream &file) {
     std::string metadataPath = work.path + "/" + work.title + "/" + METADATA_FILE_NAME;
+    file.open(metadataPath);
     if (!file.is_open()) {
         std::cerr << "Ошибка при открытии файла " << metadataPath << std::endl;
         return false;
@@ -17,7 +18,6 @@ bool ControlWorkMetadataEditor::writableMetadataFile(ControlWork &work, std::ofs
 
 bool ControlWorkMetadataEditor::readableMetadataFile(ControlWork &work, std::ifstream &file) {
     std::string metadataPath = work.path + "/" + work.title + "/" + METADATA_FILE_NAME;
-
     file.open(metadataPath);
     if (!file.is_open()) {
         std::cerr << "Ошибка при открытии файла " << metadataPath << std::endl;
@@ -78,9 +78,14 @@ bool ControlWorkMetadataEditor::incrementTaskCount(ControlWork &work) {
     readableFile >> metadata;
     readableFile.close();
 
+    std::cout << metadata["tasks"] << std::endl;
     metadata["tasks"] = metadata["tasks"].get<int>() + 1;
+    std::cout << metadata["tasks"] << std::endl;
 
     std::ofstream writableFile;
+    writableMetadataFile(work, writableFile);
     writableFile << metadata.dump(4);
     writableFile.close();
+
+    return true;
 }

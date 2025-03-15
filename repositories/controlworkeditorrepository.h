@@ -27,12 +27,14 @@ public:
 
     int addTaskGroup();
     int addTask(int groupId);
+    Task* getTaskById(int id);
     ControlWork* getControlWork() {
         return work;
     }
     std::vector<TaskGroup> getTaskGroups() {
         return groups;
     }
+    void deleteTask(int id);
 };
 
 #endif // CONTROLWORKEDITORREPOSITORY_H

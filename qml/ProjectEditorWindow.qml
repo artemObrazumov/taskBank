@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import components.controlWorkEditor
+import QtQuick.Dialogs
+import "."
 
 ApplicationWindow {
     visible: true
@@ -27,55 +29,6 @@ ApplicationWindow {
     FontLoader {
         id: montserratMedium
         source: "qrc:/font/Montserrat-Medium.ttf"
-    }
-
-    ListModel {
-        id: tasksModel
-        ListElement {
-            title: "Задание 1"
-            show: false
-            taskVariants: [
-                ListElement {
-                    taskId: 1
-                    title: "Вариант 1"
-                },
-                ListElement {
-                    taskId: 2
-                    title: "Вариант 2"
-                },
-                ListElement {
-                    taskId: 3
-                    title: "Вариант 2"
-                }
-
-            ]
-        }
-        ListElement {
-            title: "Задание 2"
-            show: false
-            taskVariants: [
-                ListElement {
-                    taskId: 4
-                    title: "Вариант 1"
-                },
-                ListElement {
-                    taskId: 5
-                    title: "Вариант 2"
-                }
-            ]
-        }
-    }
-
-    ListModel {
-        id: variantsModel
-        ListElement {
-            varId: 1
-            title: "Вариант 1"
-        }
-        ListElement {
-            varId: 2
-            title: "Вариант 2"
-        }
     }
 
     Rectangle {
@@ -106,6 +59,7 @@ ApplicationWindow {
         }
 
         Row {
+            id: tabsBlock
             anchors.top: header.bottom
             width: parent.width - 32
             anchors.left: parent.left
@@ -205,7 +159,7 @@ ApplicationWindow {
             id: tasksListContainer
             y: header.height + varinatsTab.height + 16
             width: parent.width
-            height: 400
+            height: parent.height - addTaskBlock.height - header.height - tabsBlock.height - 32
             color: "transparent"
 
             ListView {
@@ -213,7 +167,7 @@ ApplicationWindow {
                 model: editorComponent.taskGroups
                 clip: true
                 delegate: Item {
-                    width: parent.width
+                    width: tasksListContainer.width
                     height: column.height + 8
 
                     Column {
@@ -234,21 +188,39 @@ ApplicationWindow {
                                 spacing: 10
 
                                 Image {
+                                    id: taskIndicator
                                     source: "qrc:/image/openIndicator.svg"
-                                    rotation: if (modelData.show) { 0 } else { -90 }
+                                    rotation: if (model.groupData.show === true) { 0 } else { -90 }
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
 
                                 Text {
                                     id: taskTitle
-                                    text: "Задание " + modelData.index
+                                    text: "Задание " + model.groupData.index
                                     font.family: montserratRegular.name
                                     font.weight: 500
                                     font.pointSize: 16
-                                    color: if (modelData.show) { "#fff" } else { "#6B7280" }
+                                    color: if (model.groupData.show) { "#fff" } else { "#6B7280" }
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
+                            }
+                            Image {
+                                id: taskAddButton
+                                source: "qrc:/image/plus.svg"
+                                anchors.right: parent.right
+                                anchors.rightMargin: 8
+                                anchors.verticalCenter: parent.verticalCenter
+                                z: 2
+                                MouseArea {
+                                    width: parent.width
+                                    height: parent.height
+                                    cursorShape: Qt.PointingHandCursor
 
+                                    onClicked: {
+                                        console.log('new task');
+                                        editorComponent.addTaskToGroup(model.groupData.id);
+                                    }
+                                }
                             }
                             MouseArea {
                                 width: parent.width
@@ -262,12 +234,12 @@ ApplicationWindow {
                                 }
 
                                 onExited: {
-                                    if (modelData.show === true) return;
+                                    if (model.groupData.show === true) return;
                                     parent.color = "transparent";
                                 }
 
                                 onClicked: {
-                                    editorComponent.toggleGroupShow(modelData.id);
+                                    editorComponent.taskGroups.toggleGroupShow(model.groupData.id);
                                 }
                             }
                         }
@@ -275,17 +247,36 @@ ApplicationWindow {
                         Item {
                             width: parent.width
                             height: 8
-                            visible: modelData.show
+                            visible: model.groupData.show
                         }
+
+                        Item {
+                            width: parent.width
+                            height: noTasksText.height
+                            visible: model.groupData.show && model.groupData.taskVariants.length === 0
+
+                            Text {
+                                id: noTasksText
+                                text: "Нет заданий"
+                                font.family: montserratRegular.name
+                                font.weight: 500
+                                font.pointSize: 16
+                                anchors.margins: 12
+                                anchors.centerIn: parent
+                                color: "#fff"
+                            }
+                        }
+
+                        property var groupData: model.groupData
 
                         Repeater {
                             id: taskVariantsList
-                            model: modelData.taskVariants
+                            model: parent.groupData.taskVariants
                             Layout.topMargin: 8
                             delegate: Rectangle {
                                 width: parent.width + 16
                                 height: taskVariantTitle.height + 16
-                                visible: modelData.show
+                                visible: parent.groupData.show
                                 radius: 4
                                 anchors.left: parent.left
                                 anchors.right: parent.right
@@ -295,7 +286,7 @@ ApplicationWindow {
 
                                 Text {
                                     id: taskVariantTitle
-                                    text: modelData.content
+                                    text: modelData.content ? modelData.content : "Нет названия"
                                     anchors.left: parent.left
                                     anchors.right: parent.right
                                     anchors.margins: 8
@@ -306,11 +297,29 @@ ApplicationWindow {
                                     color: if (selectedTaskId === modelData.taskId) { "#fff" } else { "#6B7280" }
                                 }
 
+                                Image {
+                                    source: "qrc:/image/cross.svg"
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    anchors.right: parent.right
+                                    anchors.rightMargin: 8
+                                    z: 4
+
+                                    MouseArea {
+                                        width: parent.width
+                                        height: parent.height
+                                        cursorShape: Qt.PointingHandCursor
+
+                                        onClicked: {
+                                            confirmationWindow.show();
+                                        }
+                                    }
+                                }
+
                                 MouseArea {
                                     anchors.fill: parent
                                     hoverEnabled: true
                                     cursorShape: Qt.PointingHandCursor
-                                    z: 2
+                                    z: 3
 
                                     onEntered: {
                                         parent.color = "#2B384A";
@@ -324,13 +333,26 @@ ApplicationWindow {
                                         selectedTaskId = modelData.taskId;
                                     }
                                 }
+
+                                ConfirmationWindow {
+                                    id: confirmationWindow
+                                    message: "Вы действительно хотите удалить это\nзадание?"
+
+                                    onAccepted: {
+                                        editorComponent.deleteTask(parent.groupData.id, modelData.taskId)
+                                    }
+
+                                    onCancelled: {
+                                        confirmationWindow.hide()
+                                    }
+                                }
                             }
                         }
 
                         Item {
                             width: parent.width
                             height: 8
-                            visible: modelData.show
+                            visible: show
                         }
                     }
                 }
@@ -342,7 +364,7 @@ ApplicationWindow {
             id: variantsContainer
             y: header.height + varinatsTab.height + 16
             width: parent.width
-            height: 400
+            height: parent.height - addTaskBlock.height
             color: "transparent"
             clip: true
 
@@ -401,6 +423,65 @@ ApplicationWindow {
                 }
             }
         }
+
+        Rectangle {
+            id: addTaskBlock
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: 8
+            anchors.rightMargin: 8
+            anchors.bottomMargin: 8
+            height: addTaskRow.height
+            color: bgColor
+            radius: 10
+
+            Row {
+                id: addTaskRow
+                height: addTaskTitle.height + 32
+                anchors.left: parent.left
+                anchors.leftMargin: 8
+                spacing: 10
+
+                Image {
+                    source: "qrc:/image/plus.svg"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Text {
+                    id: addTaskTitle
+                    text: "Добавить задание"
+                    font.family: montserratRegular.name
+                    font.weight: 500
+                    font.pointSize: 16
+                    color: "#fff"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+            }
+
+            readonly property color unselectedColor: "transparent"
+            readonly property color selectedColor: "#2B384A"
+            property color bgColor: unselectedColor
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+
+                onEntered: {
+                    parent.bgColor = parent.selectedColor;
+                }
+
+                onExited: {
+                    parent.bgColor = parent.unselectedColor;
+                }
+
+                onClicked: {
+                    editorComponent.addTaskGroup();
+                }
+            }
+        }
     }
 
     Rectangle {
@@ -409,4 +490,5 @@ ApplicationWindow {
         color: "#374151"
         anchors.left: navigationSection.right
     }
+
 }

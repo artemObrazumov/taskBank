@@ -1,5 +1,13 @@
 #include "controlworkeditorcomponent.h"
 
+QVariantMap mapFromTask(Task* task) {
+    QVariantMap taskMap;
+    taskMap["taskId"] = task->id;
+    taskMap["content"] = QString::fromStdString(task->content);
+    taskMap["answer"] = QString::fromStdString(task->answer);
+    return taskMap;
+}
+
 ControlWorkEditorComponent::ControlWorkEditorComponent() {}
 
 ControlWorkEditorComponent::~ControlWorkEditorComponent() {}
@@ -19,7 +27,6 @@ void ControlWorkEditorComponent::loadControlWork() {
     emit controlWorkChanged();
 
     std::vector<TaskGroup> groups = repository->getTaskGroups();
-    QList<QVariantMap> groupsMap;
     for(auto group{groups.begin()}; group != groups.end(); group++ ) {
         QVariantMap groupMap;
         groupMap["id"] = group->id;
@@ -27,25 +34,31 @@ void ControlWorkEditorComponent::loadControlWork() {
         groupMap["show"] = false;
         QList<QVariantMap> tasks;
         for(auto task{group->tasks.begin()}; task != group->tasks.end(); task++ ) {
-            QVariantMap taskMap;
-            taskMap["taskId"] = task->id;
-            taskMap["content"] = QString::fromStdString(task->content);
-            taskMap["answer"] = QString::fromStdString(task->answer);
-            tasks.append(taskMap);
+            tasks.append(mapFromTask(&*task));
         }
         groupMap["taskVariants"] = QVariant::fromValue(tasks);
-        groupsMap.append(groupMap);
+        _taskGroups.addGroup(groupMap);
     }
-    _taskGroups = groupsMap;
-    emit taskGroupsChanged();
 }
 
-Q_INVOKABLE void ControlWorkEditorComponent::toggleGroupShow(int groupId) {
-    for (int i = 0; i < _taskGroups.size(); ++i) {
-        if (_taskGroups[i]["id"] == groupId) {
-            _taskGroups[i]["show"] = _taskGroups[i]["show"] == false;
-            emit taskGroupsChanged();
-            break;
-        }
-    }
+Q_INVOKABLE void ControlWorkEditorComponent::addTaskGroup() {
+    int groupId = repository->addTaskGroup();
+    QVariantMap groupMap;
+    groupMap["id"] = groupId;
+    groupMap["index"] = _taskGroups.rowCount() + 1;
+    groupMap["show"] = false;
+    QList<QVariantMap> tasks;
+    groupMap["taskVariants"] = QVariant::fromValue(tasks);
+    _taskGroups.addGroup(groupMap);
+}
+
+Q_INVOKABLE void ControlWorkEditorComponent::addTaskToGroup(int groupId) {
+    int taskId = repository->addTask(groupId);
+    Task* task = repository->getTaskById(taskId);
+    _taskGroups.addTaskToGroup(groupId, mapFromTask(task));
+}
+
+Q_INVOKABLE void ControlWorkEditorComponent::deleteTask(int groupId, int taskId) {
+    repository->deleteTask(taskId);
+    _taskGroups.deleteTask(groupId, taskId);
 }

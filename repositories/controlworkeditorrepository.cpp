@@ -23,3 +23,11 @@ int controlWorkEditorRepository::addTaskGroup() {
 int controlWorkEditorRepository::addTask(int groupId) {
     return content->addTaskToDatabase(groupId);
 }
+
+Task* controlWorkEditorRepository::getTaskById(int id) {
+    return content->getTaskFromDatabase(id);
+}
+
+void controlWorkEditorRepository::deleteTask(int id) {
+    content->deleteTaskFromDatabase(id);
+}

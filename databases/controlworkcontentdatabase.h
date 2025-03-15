@@ -18,6 +18,7 @@ public:
     Task* getTaskFromDatabase(int id);
     int addTaskGroupToDatabase();
     int addTaskToDatabase(int groupId);
+    void deleteTaskFromDatabase(int id);
 };
 
 #endif // CONTROLWORKCONTENTDATABASE_H
