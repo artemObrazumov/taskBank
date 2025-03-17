@@ -62,3 +62,12 @@ Q_INVOKABLE void ControlWorkEditorComponent::deleteTask(int groupId, int taskId)
     repository->deleteTask(taskId);
     _taskGroups.deleteTask(groupId, taskId);
 }
+
+Q_INVOKABLE void ControlWorkEditorComponent::addTaskTab(int taskId) {
+    Task* task = repository->getTaskById(taskId);
+    QVariantMap tabMap;
+    tabMap["taskId"] = taskId;
+    tabMap["saved"] = true;
+    tabMap["title"] = QString::fromStdString(task->content);
+    _taskTabs.addTab(tabMap);
+}

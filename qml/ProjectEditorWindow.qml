@@ -6,6 +6,7 @@ import QtQuick.Dialogs
 import "."
 
 ApplicationWindow {
+    id: root
     visible: true
     width: 1200
     height: 700
@@ -217,7 +218,6 @@ ApplicationWindow {
                                     cursorShape: Qt.PointingHandCursor
 
                                     onClicked: {
-                                        console.log('new task');
                                         editorComponent.addTaskToGroup(model.groupData.id);
                                     }
                                 }
@@ -331,6 +331,7 @@ ApplicationWindow {
 
                                     onClicked: {
                                         selectedTaskId = modelData.taskId;
+                                        editorComponent.addTaskTab(modelData.taskId);
                                     }
                                 }
 
@@ -485,10 +486,31 @@ ApplicationWindow {
     }
 
     Rectangle {
+        id: navigationBorder
         width: 1
         height: parent.height
         color: "#374151"
         anchors.left: navigationSection.right
     }
 
+    Rectangle {
+        anchors.left: navigationBorder.right
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.leftMargin: 8
+        anchors.rightMargin: 8
+        anchors.topMargin: 16
+        height: tabsRow.height
+        color: "transparent"
+
+        TabsRow {
+            id: tabsRow
+            model: editorComponent.taskTabs
+            selectedTaskId: root.selectedTaskId
+
+            onTabClicked: {
+                selectedTaskId = taskId;
+            }
+        }
+    }
 }

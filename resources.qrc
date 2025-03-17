@@ -14,5 +14,6 @@
         <file>qml/ProjectEditorWindow.qml</file>
         <file>image/openIndicator.svg</file>
         <file>qml/ConfirmationWindow.qml</file>
+        <file>qml/TabsRow.qml</file>
     </qresource>
 </RCC>

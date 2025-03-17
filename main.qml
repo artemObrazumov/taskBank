@@ -172,7 +172,7 @@ ApplicationWindow {
                                                 Layout.rightMargin: 6
                                             }
                                             Text {
-                                                text: "Вариантов: " + modelData.tasks
+                                                text: "Вариантов: " + modelData.variants
                                                 font.family: montserratRegular.name
                                                 font.pixelSize: 16
                                                 font.weight: 500

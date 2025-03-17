@@ -2,6 +2,7 @@
 #define CONTROLWORKEDITORCOMPONENT_H
 
 #include "component/utils/taskgroupsmodel.h"
+#include "component/utils/tasktabsmodel.h"
 #include "repositories/controlworkeditorrepository.h"
 #include <QObject>
 #include <QVariantList>
@@ -12,6 +13,7 @@ class ControlWorkEditorComponent : public QObject {
     Q_PROPERTY(int workId READ workId WRITE setWorkId NOTIFY workIdChanged)
     Q_PROPERTY(QVariantMap controlWork READ controlWork NOTIFY controlWorkChanged)
     Q_PROPERTY(TaskGroupModel* taskGroups READ taskGroups CONSTANT)
+    Q_PROPERTY(TaskTabsModel* taskTabs READ taskTabs CONSTANT)
 
 private:
 
@@ -20,6 +22,7 @@ private:
     QVariantMap _controlWork;
     void loadControlWork();
     TaskGroupModel _taskGroups;
+    TaskTabsModel _taskTabs;
 
 public:
 
@@ -45,11 +48,17 @@ public:
         return &_taskGroups;
     }
 
+    TaskTabsModel* taskTabs() {
+        return &_taskTabs;
+    }
+
     Q_INVOKABLE void addTaskGroup();
 
     Q_INVOKABLE void addTaskToGroup(int groupId);
 
     Q_INVOKABLE void deleteTask(int groupId, int taskId);
+
+    Q_INVOKABLE void addTaskTab(int taskId);
 
 protected:
 
@@ -59,7 +68,6 @@ signals:
 
     void workIdChanged();
     void controlWorkChanged();
-    void taskGroupsChanged();
 };
 
 #endif // CONTROLWORKEDITORCOMPONENT_H
