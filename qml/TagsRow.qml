@@ -1,18 +1,18 @@
 import QtQuick 2.15
 
 ListView {
-    id: tabs
+    id: tags
     orientation: ListView.Horizontal
     spacing: 10
     clip: true
     width: parent.width
     height: realHeight
 
-    property int selectedTaskId: -1
+    property int selectedTagId: -1
     property int realHeight: 0
 
     delegate: Rectangle {
-        id: tab
+        id: tag
         width: 240
         color: bgColor
         height: title.height + 16
@@ -24,8 +24,8 @@ ListView {
 
         Text {
             id: title
-            text: model.tabData.title === "" ? "Нет названия" : model.tabData.title
-            width: tab.width - 32
+            text: model.tagData.title
+            width: tag.width - 32
             anchors.left: parent.left
             anchors.leftMargin: 16
             anchors.top: parent.top
@@ -34,11 +34,11 @@ ListView {
             font.family: montserratRegular.name
             font.weight: 500
             elide: Text.ElideRight
-            color: if (model.tabData.taskId === selectedTaskId) { "#fff" } else { "#9CA3AF" }
+            color: if (model.tagData.tagId === selectedTagId) { "#fff" } else { "#9CA3AF" }
         }
 
         Component.onCompleted: {
-            tabs.realHeight = tab.height;
+            tags.realHeight = tag.height;
         }
 
         MouseArea {
@@ -55,10 +55,10 @@ ListView {
             }
 
             onClicked: {
-                tabClicked(model.tabData.taskId);
+                tagClicked(model.tagData.tagId);
             }
         }
     }
 
-    signal tabClicked(int taskId)
+    signal tagClicked(int tagId)
 }

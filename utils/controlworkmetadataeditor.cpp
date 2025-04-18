@@ -78,9 +78,7 @@ bool ControlWorkMetadataEditor::incrementTaskCount(ControlWork &work) {
     readableFile >> metadata;
     readableFile.close();
 
-    std::cout << metadata["tasks"] << std::endl;
     metadata["tasks"] = metadata["tasks"].get<int>() + 1;
-    std::cout << metadata["tasks"] << std::endl;
 
     std::ofstream writableFile;
     writableMetadataFile(work, writableFile);

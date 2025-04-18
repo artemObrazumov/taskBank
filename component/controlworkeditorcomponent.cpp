@@ -71,3 +71,8 @@ Q_INVOKABLE void ControlWorkEditorComponent::addTaskTab(int taskId) {
     tabMap["title"] = QString::fromStdString(task->content);
     _taskTabs.addTab(tabMap);
 }
+
+Q_INVOKABLE void ControlWorkEditorComponent::openTask(int taskId) {
+    Task* task = repository->getTaskById(taskId);
+
+}

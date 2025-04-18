@@ -24,7 +24,7 @@ qt_add_qml_module(taskBank
     SOURCES repositories/ControlWorksRepository.h repositories/ControlWorksRepository.cpp
     SOURCES models/controlwork.h
     SOURCES component/controlworkscomponent.h component/controlworkscomponent.cpp
-    QML_FILES qml/Container.qml qml/AddProjectWindow.qml qml/ProjectEditorWindow.qml qml/ConfirmationWindow.qml qml/TabsRow.qml
+    QML_FILES qml/Container.qml qml/AddProjectWindow.qml qml/ProjectEditorWindow.qml qml/ConfirmationWindow.qml qml/TabsRow.qml qml/TaskEditor.qml qml/TagsRow.qml
     RESOURCES resources.qrc
     SOURCES repositories/controlworkeditorrepository.h repositories/controlworkeditorrepository.cpp
     SOURCES models/task.h

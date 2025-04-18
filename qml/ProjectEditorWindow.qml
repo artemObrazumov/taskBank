@@ -494,6 +494,7 @@ ApplicationWindow {
     }
 
     Rectangle {
+        id: tabsRowContainer
         anchors.left: navigationBorder.right
         anchors.right: parent.right
         anchors.top: parent.top
@@ -508,9 +509,19 @@ ApplicationWindow {
             model: editorComponent.taskTabs
             selectedTaskId: root.selectedTaskId
 
-            onTabClicked: {
+            onTabClicked: function(taskId) {
                 selectedTaskId = taskId;
             }
         }
+    }
+
+    TaskEditor {
+        visible: selectedTaskId != -1
+        anchors.top: tabsRowContainer.bottom
+        anchors.left: navigationBorder.right
+        anchors.topMargin: 16
+        anchors.leftMargin: 8
+        height: parent.height - tabsRowContainer.height - 48
+        width: parent.width - navigationSection.width - 16
     }
 }

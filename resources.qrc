@@ -15,5 +15,6 @@
         <file>image/openIndicator.svg</file>
         <file>qml/ConfirmationWindow.qml</file>
         <file>qml/TabsRow.qml</file>
+        <file>qml/TaskEditor.qml</file>
     </qresource>
 </RCC>

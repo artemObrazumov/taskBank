@@ -14,6 +14,7 @@ class ControlWorkEditorComponent : public QObject {
     Q_PROPERTY(QVariantMap controlWork READ controlWork NOTIFY controlWorkChanged)
     Q_PROPERTY(TaskGroupModel* taskGroups READ taskGroups CONSTANT)
     Q_PROPERTY(TaskTabsModel* taskTabs READ taskTabs CONSTANT)
+    Q_PROPERTY(QString taskName READ taskName NOTIFY taskNameChanged)
 
 private:
 
@@ -23,6 +24,8 @@ private:
     void loadControlWork();
     TaskGroupModel _taskGroups;
     TaskTabsModel _taskTabs;
+    std::unordered_map<int, Task> taskContentMap;
+    std::string _taskName;
 
 public:
 
@@ -52,6 +55,10 @@ public:
         return &_taskTabs;
     }
 
+    QString taskName() {
+        return QString::fromStdString(_taskName);
+    }
+
     Q_INVOKABLE void addTaskGroup();
 
     Q_INVOKABLE void addTaskToGroup(int groupId);
@@ -59,6 +66,8 @@ public:
     Q_INVOKABLE void deleteTask(int groupId, int taskId);
 
     Q_INVOKABLE void addTaskTab(int taskId);
+
+    Q_INVOKABLE void openTask(int taskId);
 
 protected:
 
@@ -68,6 +77,7 @@ signals:
 
     void workIdChanged();
     void controlWorkChanged();
+    void taskNameChanged();
 };
 
 #endif // CONTROLWORKEDITORCOMPONENT_H
