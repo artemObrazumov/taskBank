@@ -4,7 +4,15 @@
 
 ControlWorkContentDatabase::ControlWorkContentDatabase(ControlWork &work) {
     sqlite3_open((work.path + "/" + work.title + "/" + CONTROL_WORK_CONTENT_DATABASE).c_str(), &database);
-    const char* sql = "CREATE TABLE task_groups (id INTEGER PRIMARY KEY AUTOINCREMENT); CREATE TABLE tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, groupId INTEGER NOT NULL,content TEXT NOT NULL,answer TEXT NOT NULL,FOREIGN KEY (groupId) REFERENCES task_groups(id) ON DELETE CASCADE);";
+    const char* sql = R"(
+        CREATE TABLE task_groups (id INTEGER PRIMARY KEY AUTOINCREMENT);
+        CREATE TABLE tasks (id INTEGER PRIMARY KEY AUTOINCREMENT, groupId INTEGER NOT NULL,content TEXT NOT NULL,answer TEXT NOT NULL,FOREIGN KEY (groupId) REFERENCES task_groups(id) ON DELETE CASCADE);
+        CREATE TABLE tags (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE);
+        CREATE TABLE task_tags (taskId INTEGER NOT NULL, tagId INTEGER NOT NULL, PRIMARY KEY (taskId, tagId), FOREIGN KEY (taskId) REFERENCES tasks(id) ON DELETE CASCADE, FOREIGN KEY (tagId) REFERENCES tags(id) ON DELETE CASCADE);
+        INSERT INTO tags(name) VALUES ("Простое");
+        INSERT INTO tags(name) VALUES ("Средняя сложность");
+        INSERT INTO tags(name) VALUES ("Сложное");
+    )";
     sqlite3_exec(database, sql, nullptr, nullptr, nullptr);
 }
 
@@ -13,7 +21,7 @@ ControlWorkContentDatabase::~ControlWorkContentDatabase() {
     database = nullptr;
 }
 
-std::vector<TaskGroup> ControlWorkContentDatabase::getTaskGroupsFromDatabase() {
+std::vector<TaskGroup> ControlWorkContentDatabase::getTaskGroupsFromDatabase(int id, bool getTags) {
     const char* sql = R"(
         SELECT groups.id AS group_id,
             tasks.id AS task_id, tasks.content, tasks.answer
@@ -91,7 +99,7 @@ int ControlWorkContentDatabase::addTaskToDatabase(int groupId) {
     return id;
 }
 
-Task* ControlWorkContentDatabase::getTaskFromDatabase(int id) {
+Task* ControlWorkContentDatabase::getTaskFromDatabase(int id, bool getTags) {
     const char* sql = "SELECT * FROM tasks WHERE id = ?;";
     sqlite3_stmt* stmt;
     Task* task = nullptr;
@@ -124,4 +132,29 @@ void ControlWorkContentDatabase::deleteTaskFromDatabase(int id) {
     }
 
     sqlite3_finalize(stmt);
+}
+
+std::vector<Tag> ControlWorkContentDatabase::getTaskTagsFromDatabase(int id, bool getTags) {
+    const char* sql = R"(
+        SELECT tags.id, tags.name FROM tasks
+        INNER JOIN task_tags ON task_tags.taskId = tasks.id
+        INNER JOIN tags ON tags.id = task_tags.tagId
+        WHERE tasks.id = ?;
+    )";
+    sqlite3_stmt* stmt;
+    std::vector<Tag> tags;
+
+    if (sqlite3_prepare_v2(this->database, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, id);
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            int id = sqlite3_column_int(stmt, 0);
+            const unsigned char* name = sqlite3_column_text(stmt, 1);
+            tags.emplace_back(Tag(id, reinterpret_cast<const char*>(name)));
+        }
+    } else {
+        std::cerr << "Ошибка: " << sqlite3_errmsg(database) << std::endl;
+    }
+
+    sqlite3_finalize(stmt);
+    return tags;
 }

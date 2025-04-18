@@ -8,7 +8,7 @@ void controlWorkEditorRepository::loadControlWork() {
     this->work = database.getControlWorkFromDatabase(this->workId);
     metadataEditor.validateControlWork(*this->work);
     content = new ControlWorkContentDatabase(*this->work);
-    groups = content->getTaskGroupsFromDatabase();
+    groups = content->getTaskGroupsFromDatabase(this->work->id);
 }
 
 int controlWorkEditorRepository::addTaskGroup() {
