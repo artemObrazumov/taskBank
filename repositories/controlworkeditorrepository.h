@@ -17,6 +17,7 @@ private:
     ControlWorkMetadataEditor metadataEditor;
     ControlWork* work;
     std::vector<TaskGroup> groups;
+    std::vector<Tag> tags;
     int workId;
 
     void loadControlWork();
@@ -34,8 +35,12 @@ public:
     std::vector<TaskGroup> getTaskGroups() {
         return groups;
     }
+    std::vector<Tag> getTags() {
+        return tags;
+    }
     void deleteTask(int id);
     void saveTask(int taskId, std::string content, std::string answer);
+    Tag* getTagById(int tagId);
 };
 
 #endif // CONTROLWORKEDITORREPOSITORY_H

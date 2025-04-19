@@ -8,13 +8,19 @@ QVariantMap mapFromTask(Task* task) {
     return taskMap;
 }
 
+QVariantMap mapFromTag(Tag* tag) {
+    QVariantMap taskMap;
+    taskMap["tagId"] = tag->id;
+    taskMap["title"] = QString::fromStdString(tag->name);
+    return taskMap;
+}
+
 ControlWorkEditorComponent::ControlWorkEditorComponent() {}
 
 ControlWorkEditorComponent::~ControlWorkEditorComponent() {}
 
 void ControlWorkEditorComponent::componentComplete() {
     componentComplete();
-    loadControlWork();
 }
 
 void ControlWorkEditorComponent::loadControlWork() {
@@ -39,6 +45,10 @@ void ControlWorkEditorComponent::loadControlWork() {
         groupMap["taskVariants"] = QVariant::fromValue(tasks);
         _taskGroups.addGroup(groupMap);
     }
+}
+
+void ControlWorkEditorComponent::loadAllTags() {
+    allTags = repository->getTags();
 }
 
 Q_INVOKABLE void ControlWorkEditorComponent::addTaskGroup() {
@@ -84,6 +94,7 @@ Q_INVOKABLE void ControlWorkEditorComponent::openTask(int taskId) {
         Task* task = repository->getTaskById(taskId);
         taskContentMap.insert({taskId, *task});
     }
+    lastOpenedWork = taskId;
     Task openedTask = taskContentMap.at(taskId);
     emit taskOpened(QString::fromStdString(openedTask.content), QString::fromStdString(openedTask.answer));
 }
@@ -97,4 +108,17 @@ Q_INVOKABLE void ControlWorkEditorComponent::saveTask(int taskId, QString conten
 
 Q_INVOKABLE void ControlWorkEditorComponent::closeTaskTab(int taskId) {
     _taskTabs.deleteTask(taskId);
+}
+
+Q_INVOKABLE void ControlWorkEditorComponent::loadTagsList() {
+    _tagsSelectList.deleteAll();
+    for(auto tag{allTags.begin()}; tag != allTags.end(); tag++) {
+        _tagsSelectList.addTag(mapFromTag(&*tag));
+    }
+}
+
+Q_INVOKABLE void ControlWorkEditorComponent::addTag(int tagId) {
+    Tag* tag = repository->getTagById(tagId);
+    taskContentMap.at(lastOpenedWork).tags.push_back(*tag);
+    _taskTags.addTag(mapFromTag(tag));
 }

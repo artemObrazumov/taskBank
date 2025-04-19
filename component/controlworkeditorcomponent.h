@@ -3,6 +3,7 @@
 
 #include "component/utils/taskgroupsmodel.h"
 #include "component/utils/tasktabsmodel.h"
+#include "component/utils/tasktagsmodel.h"
 #include "repositories/controlworkeditorrepository.h"
 #include <QObject>
 #include <QVariantList>
@@ -14,6 +15,8 @@ class ControlWorkEditorComponent : public QObject {
     Q_PROPERTY(QVariantMap controlWork READ controlWork NOTIFY controlWorkChanged)
     Q_PROPERTY(TaskGroupModel* taskGroups READ taskGroups CONSTANT)
     Q_PROPERTY(TaskTabsModel* taskTabs READ taskTabs CONSTANT)
+    Q_PROPERTY(TaskTagsModel* tagsSelectList READ tagsSelectList CONSTANT)
+    Q_PROPERTY(TaskTagsModel* taskTags READ taskTags CONSTANT)
     Q_PROPERTY(QString taskName READ taskName NOTIFY taskNameChanged)
 
 private:
@@ -22,10 +25,14 @@ private:
     int _workId;
     QVariantMap _controlWork;
     void loadControlWork();
+    void loadAllTags();
     TaskGroupModel _taskGroups;
     TaskTabsModel _taskTabs;
+    TaskTagsModel _tagsSelectList;
+    TaskTagsModel _taskTags;
     std::unordered_map<int, Task> taskContentMap;
     std::string _taskName;
+    std::vector<Tag> allTags;
 
     int lastOpenedWork = -1;
 
@@ -46,6 +53,7 @@ public:
         if (_workId != workId) {
             _workId = workId;
             loadControlWork();
+            loadAllTags();
         }
     }
 
@@ -55,6 +63,14 @@ public:
 
     TaskTabsModel* taskTabs() {
         return &_taskTabs;
+    }
+
+    TaskTagsModel* tagsSelectList() {
+        return &_tagsSelectList;
+    }
+
+    TaskTagsModel* taskTags() {
+        return &_taskTags;
     }
 
     QString taskName() {
@@ -76,6 +92,10 @@ public:
     Q_INVOKABLE void saveTask(int taskId, QString content, QString answer);
 
     Q_INVOKABLE void closeTaskTab(int taskId);
+
+    Q_INVOKABLE void loadTagsList();
+
+    Q_INVOKABLE void addTag(int tagId);
 
 protected:
 

@@ -11,6 +11,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<ControlWorksComponent>("components.controlWorks", 1, 0, "ControlWorksComponent");
     qmlRegisterType<ControlWorkEditorComponent>("components.controlWorkEditor", 1, 0, "ControlWorkEditorComponent");
+    qmlRegisterType<TaskTagsModel>("utils.taskTagsModel", 1, 0, "TaskTagsModel");
 
     QQmlApplicationEngine engine;
     const QUrl url("qrc:/path/main.qml");

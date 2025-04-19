@@ -1,4 +1,5 @@
 import QtQuick 2.15
+import utils.taskTagsModel
 
 ListView {
     id: tags
@@ -6,17 +7,18 @@ ListView {
     spacing: 10
     clip: true
     width: parent.width
-    height: realHeight
+    height: 200
 
-    property int selectedTagId: -1
     property int realHeight: 0
+
+    signal tagDeleted(int tagId);
 
     delegate: Rectangle {
         id: tag
-        width: 240
+        width: 180
         color: bgColor
         height: title.height + 16
-        radius: 4
+        radius: 16
 
         readonly property color unselectedColor: "#2B384A"
         readonly property color selectedColor: "#3F5067"
@@ -27,18 +29,36 @@ ListView {
             text: model.tagData.title
             width: tag.width - 32
             anchors.left: parent.left
-            anchors.leftMargin: 16
+            anchors.leftMargin: 8
             anchors.top: parent.top
             anchors.topMargin: 8
-            font.pixelSize: 16
+            font.pixelSize: 14
             font.family: montserratRegular.name
             font.weight: 500
             elide: Text.ElideRight
-            color: if (model.tagData.tagId === selectedTagId) { "#fff" } else { "#9CA3AF" }
+            color: "#fff"
         }
 
         Component.onCompleted: {
             tags.realHeight = tag.height;
+        }
+
+        Image {
+            source: "qrc:/image/cross.svg"
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
+            anchors.rightMargin: 8
+            z: 4
+
+            MouseArea {
+                width: parent.width
+                height: parent.height
+                cursorShape: Qt.PointingHandCursor
+
+                onClicked: {
+                    tagDeleted(model.tagData.tagId);
+                }
+            }
         }
 
         MouseArea {
@@ -53,12 +73,6 @@ ListView {
             onExited: {
                 parent.bgColor = parent.unselectedColor;
             }
-
-            onClicked: {
-                tagClicked(model.tagData.tagId);
-            }
         }
     }
-
-    signal tagClicked(int tagId)
 }

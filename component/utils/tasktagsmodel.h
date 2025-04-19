@@ -40,14 +40,15 @@ public:
     }
 
     void addTag(QVariantMap tagMap) {
-        for (int i = 0; i < _taskTags.size(); ++i) {
-            if (_taskTags[i]["taskId"] == tagMap["taskId"]) {
-                return;
-            }
-        }
         beginInsertRows(QModelIndex(), _taskTags.size(), _taskTags.size());
         _taskTags.append(tagMap);
         endInsertRows();
+    }
+
+    void deleteAll() {
+        beginResetModel();
+        _taskTags.clear();
+        endResetModel();
     }
 
     TaskTagsModel() {}

@@ -16,5 +16,7 @@
         <file>qml/ConfirmationWindow.qml</file>
         <file>qml/TabsRow.qml</file>
         <file>qml/TaskEditor.qml</file>
+        <file>qml/TagsWindow.qml</file>
+        <file>qml/AddTagWindow.qml</file>
     </qresource>
 </RCC>

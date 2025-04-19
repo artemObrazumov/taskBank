@@ -9,6 +9,7 @@ void controlWorkEditorRepository::loadControlWork() {
     metadataEditor.validateControlWork(*this->work);
     content = new ControlWorkContentDatabase(*this->work);
     groups = content->getTaskGroupsFromDatabase(this->work->id);
+    tags = content->getAllTagsFromDatabase();
 }
 
 int controlWorkEditorRepository::addTaskGroup() {
@@ -34,4 +35,8 @@ void controlWorkEditorRepository::deleteTask(int id) {
 
 void controlWorkEditorRepository::saveTask(int taskId, std::string content, std::string answer) {
     this->content->saveTaskToDatabase(taskId, content, answer);
+}
+
+Tag* controlWorkEditorRepository::getTagById(int tagId) {
+    return content->getTagFromDatabase(tagId);
 }

@@ -24,9 +24,10 @@ qt_add_qml_module(taskBank
     SOURCES repositories/ControlWorksRepository.h repositories/ControlWorksRepository.cpp
     SOURCES models/controlwork.h
     SOURCES component/controlworkscomponent.h component/controlworkscomponent.cpp
-    QML_FILES qml/Container.qml qml/AddProjectWindow.qml qml/ProjectEditorWindow.qml qml/ConfirmationWindow.qml qml/TabsRow.qml qml/TaskEditor.qml qml/TagsRow.qml
+    QML_FILES qml/Container.qml qml/AddProjectWindow.qml qml/ProjectEditorWindow.qml qml/ConfirmationWindow.qml qml/TabsRow.qml qml/TaskEditor.qml
+        qml/TagsRow.qml qml/TagsWindow.qml qml/AddTagWindow.qml
     RESOURCES resources.qrc
-    SOURCES repositories/controlworkeditorrepository.h repositories/controlworkeditorrepository.cpp
+    SOURCES  repositories/controlworkeditorrepository.cpp
     SOURCES models/task.h
     SOURCES Constants.h
     SOURCES databases/controlworkdatabase.h databases/controlworkdatabase.cpp
@@ -34,8 +35,9 @@ qt_add_qml_module(taskBank
     SOURCES models/taskgroup.h
     SOURCES databases/controlworkcontentdatabase.h databases/controlworkcontentdatabase.cpp
     SOURCES component/controlworkeditorcomponent.h component/controlworkeditorcomponent.cpp
-    SOURCES component/utils/TaskGroupsModel.h component/utils/TaskTabsModel.h
+    SOURCES component/utils/TaskGroupsModel.h component/utils/TaskTabsModel.h component/utils/tasktagsmodel.h
     SOURCES models/Tag.h
+    SOURCES
 )
 
 target_link_libraries(taskBank

@@ -16,7 +16,9 @@ public:
 
     std::vector<TaskGroup> getTaskGroupsFromDatabase(int id, bool getTags = true);
     std::vector<Tag> getTaskTagsFromDatabase(int id, bool getTags = true);
+    std::vector<Tag> getAllTagsFromDatabase();
     Task* getTaskFromDatabase(int id, bool getTags = true);
+    Tag* getTagFromDatabase(int tagId);
     int addTaskGroupToDatabase();
     int addTaskToDatabase(int groupId);
     void deleteTaskFromDatabase(int id);

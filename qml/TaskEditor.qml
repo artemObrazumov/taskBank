@@ -3,15 +3,19 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Dialogs
 import "."
+import utils.taskTagsModel
 
 Rectangle {
     id: root
     color: "transparent"
+    height: taskTitle.height + taskTitleRect.height + tagsTitle.height + tagsContainer.height + answerTitle.height + taskAnswerRect.height + saveButton.height + 80
 
     property alias content: taskTitleField.text
     property alias answer: taskAnswerField.text
+    property TaskTagsModel tagsModel: TaskTagsModel {}
 
     signal saveClicked
+    signal tagsSelectWindowOpened
 
     Text {
         id: taskTitle
@@ -27,6 +31,7 @@ Rectangle {
         anchors.left: root.left
         anchors.right: root.right
         anchors.topMargin: 8
+        anchors.rightMargin: 16
         height: 188
         radius: 6
         color: "#374151"
@@ -61,7 +66,7 @@ Rectangle {
 
     Text {
         id: tagsTitle
-        text: "Тэги"
+        text: "Категории"
         font.family: "Montserrat"
         font.pixelSize: 14
         color: "white"
@@ -72,6 +77,7 @@ Rectangle {
     Rectangle {
         id: tagsContainer
         anchors.top: tagsTitle.bottom
+        anchors.topMargin: 8
         width: parent.width
         height: tagAddButton.height
         color: "transparent"
@@ -79,6 +85,8 @@ Rectangle {
         TagsRow {
             anchors.left: parent.left
             anchors.right: tagAddButton.left
+            anchors.rightMargin: 8
+            model: root.tagsModel
         }
 
         Container {
@@ -109,7 +117,7 @@ Rectangle {
                 }
 
                 onClicked: {
-
+                    tagsSelectWindowOpened()
                 }
             }
 
@@ -139,6 +147,7 @@ Rectangle {
         anchors.left: root.left
         anchors.right: root.right
         anchors.topMargin: 8
+        anchors.rightMargin: 16
         height: 188
         radius: 6
         color: "#374151"
@@ -177,7 +186,7 @@ Rectangle {
         anchors.top: taskAnswerRect.bottom
         anchors.right: root.right
         anchors.topMargin: 16
-        anchors.rightMargin: 8
+        anchors.rightMargin: 24
         width: saveText.width + 32
         height: saveText.height + 16
 

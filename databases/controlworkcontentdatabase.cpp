@@ -159,6 +159,25 @@ std::vector<Tag> ControlWorkContentDatabase::getTaskTagsFromDatabase(int id, boo
     return tags;
 }
 
+std::vector<Tag> ControlWorkContentDatabase::getAllTagsFromDatabase() {
+    const char* sql = "SELECT * FROM tags";
+    sqlite3_stmt* stmt;
+    std::vector<Tag> tags;
+
+    if (sqlite3_prepare_v2(this->database, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            int id = sqlite3_column_int(stmt, 0);
+            const unsigned char* name = sqlite3_column_text(stmt, 1);
+            tags.emplace_back(Tag(id, reinterpret_cast<const char*>(name)));
+        }
+    } else {
+        std::cerr << "Ошибка: " << sqlite3_errmsg(database) << std::endl;
+    }
+
+    sqlite3_finalize(stmt);
+    return tags;
+}
+
 void ControlWorkContentDatabase::saveTaskToDatabase(int taskId, std::string content, std::string answer) {
     const char* sql = "UPDATE tasks SET content = ?, answer = ? WHERE id = ?";
     sqlite3_stmt* stmt;
@@ -174,4 +193,24 @@ void ControlWorkContentDatabase::saveTaskToDatabase(int taskId, std::string cont
     }
 
     sqlite3_finalize(stmt);
+}
+
+Tag* ControlWorkContentDatabase::getTagFromDatabase(int tagId) {
+    const char* sql = "SELECT * FROM tags WHERE id = ?";
+    sqlite3_stmt* stmt;
+    Tag* tag = nullptr;
+
+    if (sqlite3_prepare_v2(this->database, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, tagId);
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            int id = sqlite3_column_int(stmt, 0);
+            const unsigned char* name = sqlite3_column_text(stmt, 1);
+            tag = new Tag(id, reinterpret_cast<const char*>(name));
+        }
+    } else {
+        std::cerr << "Ошибка: " << sqlite3_errmsg(database) << std::endl;
+    }
+
+    sqlite3_finalize(stmt);
+    return tag;
 }

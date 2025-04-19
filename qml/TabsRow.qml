@@ -73,7 +73,6 @@ ListView {
             }
 
             onClicked: {
-                console.log(model.tabData.taskId);
                 tabClicked(model.tabData.taskId);
             }
         }

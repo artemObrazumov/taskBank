@@ -536,18 +536,55 @@ ApplicationWindow {
         }
     }
 
-    TaskEditor {
-        id: taskEditor
+    ScrollView {
         visible: selectedTaskId != -1
         anchors.top: tabsRowContainer.bottom
         anchors.left: navigationBorder.right
         anchors.topMargin: 16
         anchors.leftMargin: 8
+        clip: true
         height: parent.height - tabsRowContainer.height - 48
         width: parent.width - navigationSection.width - 16
+        contentHeight: taskEditor.height + 16
 
-        onSaveClicked: {
-            editorComponent.saveTask(selectedTaskId, taskEditor.content, taskEditor.answer)
+        Item {
+            id: taskEditorWrapper
+            width: parent.width
+            height: taskEditor.height
+            anchors.top: parent.top
+            anchors.left: parent.left
+
+            TaskEditor {
+                id: taskEditor
+                width: parent.width
+
+                tagsModel: editorComponent.taskTags
+
+                onSaveClicked: {
+                    editorComponent.saveTask(selectedTaskId, taskEditor.content, taskEditor.answer)
+                }
+
+                onTagsSelectWindowOpened: {
+                    editorComponent.loadTagsList()
+                    tagsWindow.show()
+                }
+            }
+        }
+    }
+
+    TagsWindow {
+        id: tagsWindow
+        visible: false
+
+        tagsModel: editorComponent.tagsSelectList
+
+        onCancelled: {
+            tagsWindow.close()
+        }
+
+        onTagSelected: function (tagId) {
+            tagsWindow.close()
+            editorComponent.addTag(tagId)
         }
     }
 }
