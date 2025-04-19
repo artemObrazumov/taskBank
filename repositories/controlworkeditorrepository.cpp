@@ -31,3 +31,7 @@ Task* controlWorkEditorRepository::getTaskById(int id) {
 void controlWorkEditorRepository::deleteTask(int id) {
     content->deleteTaskFromDatabase(id);
 }
+
+void controlWorkEditorRepository::saveTask(int taskId, std::string content, std::string answer) {
+    this->content->saveTaskToDatabase(taskId, content, answer);
+}

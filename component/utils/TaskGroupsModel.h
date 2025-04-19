@@ -87,6 +87,22 @@ public:
         }
     }
 
+    void updateTaskTitle(int taskId, QString title) {
+        for (int i = 0; i < _taskGroups.size(); ++i) {
+            QList<QVariantMap> newTaskVariants = _taskGroups[i]["taskVariants"].value<QList<QVariantMap>>();
+            for (int j = 0; j < newTaskVariants.size(); ++j) {
+                if (newTaskVariants[j]["taskId"] == taskId) {
+                    newTaskVariants[j]["content"] = title;
+                    break;
+                }
+            }
+            _taskGroups[i]["taskVariants"] = QVariant::fromValue(newTaskVariants);
+            QModelIndex modelIndex = index(i);
+            emit dataChanged(modelIndex, modelIndex, {GroupDataRole});
+            break;
+        }
+    }
+
 signals:
 
     void taskGroupsChanged();

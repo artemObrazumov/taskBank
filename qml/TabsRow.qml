@@ -41,6 +41,24 @@ ListView {
             tabs.realHeight = tab.height;
         }
 
+        Image {
+            source: "qrc:/image/cross.svg"
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
+            anchors.rightMargin: 8
+            z: 4
+
+            MouseArea {
+                width: parent.width
+                height: parent.height
+                cursorShape: Qt.PointingHandCursor
+
+                onClicked: {
+                    tabClosed(model.tabData.taskId);
+                }
+            }
+        }
+
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
@@ -55,10 +73,12 @@ ListView {
             }
 
             onClicked: {
+                console.log(model.tabData.taskId);
                 tabClicked(model.tabData.taskId);
             }
         }
     }
 
     signal tabClicked(int taskId)
+    signal tabClosed(int taskId)
 }

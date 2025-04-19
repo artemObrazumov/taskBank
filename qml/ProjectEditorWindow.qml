@@ -20,6 +20,17 @@ ApplicationWindow {
     ControlWorkEditorComponent {
         id: editorComponent
         workId: 2
+
+        onTaskOpened: function(content, answer) {
+            taskEditor.content = content;
+            taskEditor.answer = answer;
+        }
+
+        onTaskDeleted: function(taskId) {
+            if (selectedTaskId === taskId) {
+                selectedTaskId = -1;
+            }
+        }
     }
 
     FontLoader {
@@ -330,6 +341,7 @@ ApplicationWindow {
                                     }
 
                                     onClicked: {
+                                        editorComponent.openTask(modelData.taskId);
                                         selectedTaskId = modelData.taskId;
                                         editorComponent.addTaskTab(modelData.taskId);
                                     }
@@ -510,12 +522,22 @@ ApplicationWindow {
             selectedTaskId: root.selectedTaskId
 
             onTabClicked: function(taskId) {
-                selectedTaskId = taskId;
+                editorComponent.saveLocally(selectedTaskId, taskEditor.content, taskEditor.answer);
+                editorComponent.openTask(taskId);
+                root.selectedTaskId = taskId;
+            }
+
+            onTabClosed: function(taskId) {
+                editorComponent.closeTaskTab(taskId);
+                if (root.selectedTaskId === taskId) {
+                    root.selectedTaskId = -1;
+                }
             }
         }
     }
 
     TaskEditor {
+        id: taskEditor
         visible: selectedTaskId != -1
         anchors.top: tabsRowContainer.bottom
         anchors.left: navigationBorder.right
@@ -523,5 +545,9 @@ ApplicationWindow {
         anchors.leftMargin: 8
         height: parent.height - tabsRowContainer.height - 48
         width: parent.width - navigationSection.width - 16
+
+        onSaveClicked: {
+            editorComponent.saveTask(selectedTaskId, taskEditor.content, taskEditor.answer)
+        }
     }
 }

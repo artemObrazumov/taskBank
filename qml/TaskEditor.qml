@@ -8,6 +8,11 @@ Rectangle {
     id: root
     color: "transparent"
 
+    property alias content: taskTitleField.text
+    property alias answer: taskAnswerField.text
+
+    signal saveClicked
+
     Text {
         id: taskTitle
         text: "Введите название задания"
@@ -203,6 +208,10 @@ Rectangle {
 
             onExited: {
                 parent.bgColor = parent.unselectedColor;
+            }
+
+            onClicked: {
+                saveClicked()
             }
         }
     }

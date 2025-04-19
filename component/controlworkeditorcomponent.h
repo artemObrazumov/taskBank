@@ -27,6 +27,8 @@ private:
     std::unordered_map<int, Task> taskContentMap;
     std::string _taskName;
 
+    int lastOpenedWork = -1;
+
 public:
 
     ControlWorkEditorComponent();
@@ -67,7 +69,13 @@ public:
 
     Q_INVOKABLE void addTaskTab(int taskId);
 
+    Q_INVOKABLE void saveLocally(int taskId, QString content, QString answer);
+
     Q_INVOKABLE void openTask(int taskId);
+
+    Q_INVOKABLE void saveTask(int taskId, QString content, QString answer);
+
+    Q_INVOKABLE void closeTaskTab(int taskId);
 
 protected:
 
@@ -78,6 +86,8 @@ signals:
     void workIdChanged();
     void controlWorkChanged();
     void taskNameChanged();
+    void taskOpened(QString content, QString answer);
+    void taskDeleted(int taskId);
 };
 
 #endif // CONTROLWORKEDITORCOMPONENT_H

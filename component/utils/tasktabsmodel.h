@@ -50,6 +50,27 @@ public:
         endInsertRows();
     }
 
+    void changeTabTitle(int taskId, QString newTitle) {
+        for (int i = 0; i < _taskTabs.size(); ++i) {
+            if (_taskTabs[i]["taskId"] == taskId) {
+                _taskTabs[i]["title"] = newTitle;
+                emit dataChanged(index(i), index(i), { TabDataRole });
+                return;
+            }
+        }
+    }
+
+    void deleteTask(int taskId) {
+        for (int i = 0; i < _taskTabs.size(); ++i) {
+            if (_taskTabs[i]["taskId"] == taskId) {
+                beginRemoveRows(QModelIndex(), i, i);
+                _taskTabs.removeAt(i);
+                endRemoveRows();
+                return;
+            }
+        }
+    }
+
     TaskTabsModel() {}
     ~TaskTabsModel() {}
 

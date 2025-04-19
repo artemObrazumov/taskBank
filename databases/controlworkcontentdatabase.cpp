@@ -158,3 +158,20 @@ std::vector<Tag> ControlWorkContentDatabase::getTaskTagsFromDatabase(int id, boo
     sqlite3_finalize(stmt);
     return tags;
 }
+
+void ControlWorkContentDatabase::saveTaskToDatabase(int taskId, std::string content, std::string answer) {
+    const char* sql = "UPDATE tasks SET content = ?, answer = ? WHERE id = ?";
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(this->database, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_text(stmt, 1, content.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 2, answer.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_int(stmt, 3, taskId);
+
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            std::cerr << "Ошибка: " << sqlite3_errmsg(this->database) << std::endl;
+        }
+    }
+
+    sqlite3_finalize(stmt);
+}

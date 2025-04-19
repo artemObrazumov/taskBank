@@ -20,6 +20,7 @@ public:
     int addTaskGroupToDatabase();
     int addTaskToDatabase(int groupId);
     void deleteTaskFromDatabase(int id);
+    void saveTaskToDatabase(int taskId, std::string content, std::string answer);
 };
 
 #endif // CONTROLWORKCONTENTDATABASE_H

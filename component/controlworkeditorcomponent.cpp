@@ -61,6 +61,8 @@ Q_INVOKABLE void ControlWorkEditorComponent::addTaskToGroup(int groupId) {
 Q_INVOKABLE void ControlWorkEditorComponent::deleteTask(int groupId, int taskId) {
     repository->deleteTask(taskId);
     _taskGroups.deleteTask(groupId, taskId);
+    _taskTabs.deleteTask(taskId);
+    emit taskDeleted(taskId);
 }
 
 Q_INVOKABLE void ControlWorkEditorComponent::addTaskTab(int taskId) {
@@ -72,7 +74,27 @@ Q_INVOKABLE void ControlWorkEditorComponent::addTaskTab(int taskId) {
     _taskTabs.addTab(tabMap);
 }
 
-Q_INVOKABLE void ControlWorkEditorComponent::openTask(int taskId) {
-    Task* task = repository->getTaskById(taskId);
+Q_INVOKABLE void ControlWorkEditorComponent::saveLocally(int taskId, QString content, QString answer) {
+    taskContentMap.at(taskId).content = content.toStdString();
+    taskContentMap.at(taskId).answer = answer.toStdString();
+}
 
+Q_INVOKABLE void ControlWorkEditorComponent::openTask(int taskId) {
+    if (taskContentMap.find(taskId) == taskContentMap.end()) {
+        Task* task = repository->getTaskById(taskId);
+        taskContentMap.insert({taskId, *task});
+    }
+    Task openedTask = taskContentMap.at(taskId);
+    emit taskOpened(QString::fromStdString(openedTask.content), QString::fromStdString(openedTask.answer));
+}
+
+Q_INVOKABLE void ControlWorkEditorComponent::saveTask(int taskId, QString content, QString answer) {
+    saveLocally(taskId, content, answer);
+    repository->saveTask(taskId, content.toStdString(), answer.toStdString());
+    _taskTabs.changeTabTitle(taskId, content);
+    _taskGroups.updateTaskTitle(taskId, content);
+}
+
+Q_INVOKABLE void ControlWorkEditorComponent::closeTaskTab(int taskId) {
+    _taskTabs.deleteTask(taskId);
 }

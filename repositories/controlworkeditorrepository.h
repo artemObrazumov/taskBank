@@ -35,6 +35,7 @@ public:
         return groups;
     }
     void deleteTask(int id);
+    void saveTask(int taskId, std::string content, std::string answer);
 };
 
 #endif // CONTROLWORKEDITORREPOSITORY_H
