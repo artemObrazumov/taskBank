@@ -41,6 +41,10 @@ public:
     void deleteTask(int id);
     void saveTask(int taskId, std::string content, std::string answer);
     Tag* getTagById(int tagId);
+    int createTag(std::string title);
+    void deleteTaskTags(int taskId);
+    void saveTaskTag(int taskId, int tagId);
+    std::vector<Tag> getTaskTags(int taskId);
 };
 
 #endif // CONTROLWORKEDITORREPOSITORY_H

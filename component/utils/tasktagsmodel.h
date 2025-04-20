@@ -51,6 +51,26 @@ public:
         endResetModel();
     }
 
+    void deleteTag(int tagId) {
+        for (int i = 0; i < _taskTags.size(); ++i) {
+            if (_taskTags[i]["tagId"] == tagId) {
+                beginRemoveRows(QModelIndex(), i, i);
+                _taskTags.removeAt(i);
+                endRemoveRows();
+                return;
+            }
+        }
+    }
+
+    bool containsTag(int tagId) {
+        for (const auto& tag : _taskTags) {
+            if (tag["tagId"].toInt() == tagId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     TaskTagsModel() {}
     ~TaskTagsModel() {}
 

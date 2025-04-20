@@ -16,6 +16,7 @@ Rectangle {
 
     signal saveClicked
     signal tagsSelectWindowOpened
+    signal taskTagDeleted(int tagId)
 
     Text {
         id: taskTitle
@@ -87,6 +88,10 @@ Rectangle {
             anchors.right: tagAddButton.left
             anchors.rightMargin: 8
             model: root.tagsModel
+
+            onTagDeleted: function(tagId) {
+                taskTagDeleted(tagId)
+            }
         }
 
         Container {

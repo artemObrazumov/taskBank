@@ -11,7 +11,7 @@ ListView {
 
     property int realHeight: 0
 
-    signal tagDeleted(int tagId);
+    signal tagDeleted(int tagId)
 
     delegate: Rectangle {
         id: tag

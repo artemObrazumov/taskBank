@@ -87,21 +87,40 @@ Q_INVOKABLE void ControlWorkEditorComponent::addTaskTab(int taskId) {
 Q_INVOKABLE void ControlWorkEditorComponent::saveLocally(int taskId, QString content, QString answer) {
     taskContentMap.at(taskId).content = content.toStdString();
     taskContentMap.at(taskId).answer = answer.toStdString();
+    taskContentMap.at(taskId).tags.clear();
+    for (int i = 0; i < _taskTags.taskTags().count(); ++i) {
+        taskContentMap.at(taskId).tags.emplace_back(
+            _taskTags.taskTags()[i]["tagId"].toInt(), _taskTags.taskTags()[i]["title"].toString().toStdString()
+        );
+    }
 }
 
 Q_INVOKABLE void ControlWorkEditorComponent::openTask(int taskId) {
     if (taskContentMap.find(taskId) == taskContentMap.end()) {
         Task* task = repository->getTaskById(taskId);
         taskContentMap.insert({taskId, *task});
+        std::vector<Tag> tags = repository->getTaskTags(taskId);
+        for (int i = 0; i < tags.size(); ++i) {
+            taskContentMap.at(taskId).tags.push_back(tags[i]);
+        }
     }
     lastOpenedWork = taskId;
     Task openedTask = taskContentMap.at(taskId);
+    _taskTags.deleteAll();
+    for (int i = 0; i < openedTask.tags.size(); ++i) {
+        _taskTags.addTag( mapFromTag(&openedTask.tags[i]) );
+    }
     emit taskOpened(QString::fromStdString(openedTask.content), QString::fromStdString(openedTask.answer));
 }
 
 Q_INVOKABLE void ControlWorkEditorComponent::saveTask(int taskId, QString content, QString answer) {
     saveLocally(taskId, content, answer);
     repository->saveTask(taskId, content.toStdString(), answer.toStdString());
+    repository->deleteTaskTags(taskId);
+    std::vector<Tag> tags = taskContentMap.at(taskId).tags;
+    for (int i = 0; i < tags.size(); ++i) {
+        repository->saveTaskTag(taskId, tags[i].id);
+    }
     _taskTabs.changeTabTitle(taskId, content);
     _taskGroups.updateTaskTitle(taskId, content);
 }
@@ -113,7 +132,9 @@ Q_INVOKABLE void ControlWorkEditorComponent::closeTaskTab(int taskId) {
 Q_INVOKABLE void ControlWorkEditorComponent::loadTagsList() {
     _tagsSelectList.deleteAll();
     for(auto tag{allTags.begin()}; tag != allTags.end(); tag++) {
-        _tagsSelectList.addTag(mapFromTag(&*tag));
+        if (_taskTags.containsTag(tag->id) == false) {
+            _tagsSelectList.addTag(mapFromTag(&*tag));
+        }
     }
 }
 
@@ -121,4 +142,15 @@ Q_INVOKABLE void ControlWorkEditorComponent::addTag(int tagId) {
     Tag* tag = repository->getTagById(tagId);
     taskContentMap.at(lastOpenedWork).tags.push_back(*tag);
     _taskTags.addTag(mapFromTag(tag));
+}
+
+Q_INVOKABLE void ControlWorkEditorComponent::createTag(QString title) {
+    int tagId = repository->createTag(title.toStdString());
+    Tag tag(tagId, title.toStdString());
+    allTags.push_back(tag);
+    _tagsSelectList.addTag(mapFromTag(&tag));
+}
+
+Q_INVOKABLE void ControlWorkEditorComponent::deleteTag(int tagId) {
+    _taskTags.deleteTag(tagId);
 }

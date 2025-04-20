@@ -97,6 +97,10 @@ public:
 
     Q_INVOKABLE void addTag(int tagId);
 
+    Q_INVOKABLE void createTag(QString title);
+
+    Q_INVOKABLE void deleteTag(int tagId);
+
 protected:
 
     void componentComplete();

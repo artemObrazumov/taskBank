@@ -568,6 +568,10 @@ ApplicationWindow {
                     editorComponent.loadTagsList()
                     tagsWindow.show()
                 }
+
+                onTaskTagDeleted: function(tagId) {
+                    editorComponent.deleteTag(tagId)
+                }
             }
         }
     }
@@ -585,6 +589,10 @@ ApplicationWindow {
         onTagSelected: function (tagId) {
             tagsWindow.close()
             editorComponent.addTag(tagId)
+        }
+
+        onTagAdded: function(title) {
+            editorComponent.createTag(title)
         }
     }
 }

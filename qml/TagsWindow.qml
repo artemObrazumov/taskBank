@@ -28,6 +28,7 @@ Window {
 
     signal tagSelected(int tagId)
     signal cancelled()
+    signal tagAdded(string title)
 
     Rectangle {
         width: parent.width
@@ -196,5 +197,14 @@ Window {
     AddTagWindow {
         id: addTagWindow
         visible: false
+
+        onCancelled: {
+            addTagWindow.close()
+        }
+
+        onAccepted: function(title) {
+            addTagWindow.close()
+            tagAdded(title)
+        }
     }
 }

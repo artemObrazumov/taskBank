@@ -40,3 +40,19 @@ void controlWorkEditorRepository::saveTask(int taskId, std::string content, std:
 Tag* controlWorkEditorRepository::getTagById(int tagId) {
     return content->getTagFromDatabase(tagId);
 }
+
+int controlWorkEditorRepository::createTag(std::string title) {
+    return content->createTagInDatabase(title);
+}
+
+void controlWorkEditorRepository::deleteTaskTags(int taskId) {
+    content->deleteTaskTags(taskId);
+}
+
+void controlWorkEditorRepository::saveTaskTag(int taskId, int tagId) {
+    content->saveTaskTag(taskId, tagId);
+}
+
+std::vector<Tag> controlWorkEditorRepository::getTaskTags(int taskId) {
+    return content->getTaskTagsFromDatabase(taskId);
+}

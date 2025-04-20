@@ -21,7 +21,7 @@ ControlWorkContentDatabase::~ControlWorkContentDatabase() {
     database = nullptr;
 }
 
-std::vector<TaskGroup> ControlWorkContentDatabase::getTaskGroupsFromDatabase(int id, bool getTags) {
+std::vector<TaskGroup> ControlWorkContentDatabase::getTaskGroupsFromDatabase(int id) {
     const char* sql = R"(
         SELECT groups.id AS group_id,
             tasks.id AS task_id, tasks.content, tasks.answer
@@ -99,7 +99,7 @@ int ControlWorkContentDatabase::addTaskToDatabase(int groupId) {
     return id;
 }
 
-Task* ControlWorkContentDatabase::getTaskFromDatabase(int id, bool getTags) {
+Task* ControlWorkContentDatabase::getTaskFromDatabase(int id) {
     const char* sql = "SELECT * FROM tasks WHERE id = ?;";
     sqlite3_stmt* stmt;
     Task* task = nullptr;
@@ -134,7 +134,7 @@ void ControlWorkContentDatabase::deleteTaskFromDatabase(int id) {
     sqlite3_finalize(stmt);
 }
 
-std::vector<Tag> ControlWorkContentDatabase::getTaskTagsFromDatabase(int id, bool getTags) {
+std::vector<Tag> ControlWorkContentDatabase::getTaskTagsFromDatabase(int id) {
     const char* sql = R"(
         SELECT tags.id, tags.name FROM tasks
         INNER JOIN task_tags ON task_tags.taskId = tasks.id
@@ -146,7 +146,7 @@ std::vector<Tag> ControlWorkContentDatabase::getTaskTagsFromDatabase(int id, boo
 
     if (sqlite3_prepare_v2(this->database, sql, -1, &stmt, nullptr) == SQLITE_OK) {
         sqlite3_bind_int(stmt, 1, id);
-        if (sqlite3_step(stmt) == SQLITE_ROW) {
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
             int id = sqlite3_column_int(stmt, 0);
             const unsigned char* name = sqlite3_column_text(stmt, 1);
             tags.emplace_back(Tag(id, reinterpret_cast<const char*>(name)));
@@ -213,4 +213,58 @@ Tag* ControlWorkContentDatabase::getTagFromDatabase(int tagId) {
 
     sqlite3_finalize(stmt);
     return tag;
+}
+
+int ControlWorkContentDatabase::createTagInDatabase(std::string title) {
+    const char* sql = "INSERT INTO tags (name) VALUES (?)";
+    sqlite3_stmt* stmt;
+    int id = -1;
+
+    if (sqlite3_prepare_v2(database, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_text(stmt, 1, title.c_str(), -1, SQLITE_STATIC);
+
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            std::cerr << "Ошибка: " << sqlite3_errmsg(database) << std::endl;
+        } else {
+            id = sqlite3_last_insert_rowid(database);
+        }
+    } else {
+        std::cerr << "Ошибка: " << sqlite3_errmsg(database) << std::endl;
+    }
+
+    sqlite3_finalize(stmt);
+    return id;
+}
+
+void ControlWorkContentDatabase::deleteTaskTags(int taskId) {
+    const char* sql = "DELETE FROM task_tags WHERE taskId = ?";
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(database, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, taskId);
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            std::cerr << "Ошибка: " << sqlite3_errmsg(database) << std::endl;
+        }
+    } else {
+        std::cerr << "Ошибка: " << sqlite3_errmsg(database) << std::endl;
+    }
+
+    sqlite3_finalize(stmt);
+}
+
+void ControlWorkContentDatabase::saveTaskTag(int taskId, int tagId) {
+    const char* sql = "INSERT INTO task_tags (taskId, tagId) VALUES (?, ?)";
+    sqlite3_stmt* stmt;
+
+    if (sqlite3_prepare_v2(database, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, taskId);
+        sqlite3_bind_int(stmt, 2, tagId);
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            std::cerr << "Ошибка: " << sqlite3_errmsg(database) << std::endl;
+        }
+    } else {
+        std::cerr << "Ошибка: " << sqlite3_errmsg(database) << std::endl;
+    }
+
+    sqlite3_finalize(stmt);
 }
