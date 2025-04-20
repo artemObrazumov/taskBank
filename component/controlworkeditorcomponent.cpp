@@ -30,6 +30,7 @@ void ControlWorkEditorComponent::loadControlWork() {
 
     ControlWork* work = repository->getControlWork();
     _controlWork["title"] = QString::fromStdString(work->title);
+    this->_path = work->path + "/" + work->title;
     emit controlWorkChanged();
 
     std::vector<TaskGroup> groups = repository->getTaskGroups();
@@ -105,6 +106,8 @@ Q_INVOKABLE void ControlWorkEditorComponent::openTask(int taskId) {
         }
     }
     lastOpenedWork = taskId;
+    this->_taskId = lastOpenedWork;
+    emit taskIdChanged();
     Task openedTask = taskContentMap.at(taskId);
     _taskTags.deleteAll();
     for (int i = 0; i < openedTask.tags.size(); ++i) {

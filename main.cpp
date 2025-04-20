@@ -1,5 +1,6 @@
 #include "component/ControlWorksComponent.h"
 #include "component/controlworkeditorcomponent.h"
+#include "component/utils/AttachmentSaver.h"
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QStandardItemModel>
@@ -12,6 +13,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<ControlWorksComponent>("components.controlWorks", 1, 0, "ControlWorksComponent");
     qmlRegisterType<ControlWorkEditorComponent>("components.controlWorkEditor", 1, 0, "ControlWorkEditorComponent");
     qmlRegisterType<TaskTagsModel>("utils.taskTagsModel", 1, 0, "TaskTagsModel");
+    qmlRegisterType<AttachmentSaver>("utils.attachmentSaver", 1, 0, "AttachmentSaver");
 
     QQmlApplicationEngine engine;
     const QUrl url("qrc:/path/main.qml");

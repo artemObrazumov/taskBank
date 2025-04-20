@@ -18,6 +18,8 @@ class ControlWorkEditorComponent : public QObject {
     Q_PROPERTY(TaskTagsModel* tagsSelectList READ tagsSelectList CONSTANT)
     Q_PROPERTY(TaskTagsModel* taskTags READ taskTags CONSTANT)
     Q_PROPERTY(QString taskName READ taskName NOTIFY taskNameChanged)
+    Q_PROPERTY(QString path READ path CONSTANT)
+    Q_PROPERTY(int taskId READ taskId NOTIFY taskIdChanged)
 
 private:
 
@@ -33,6 +35,8 @@ private:
     std::unordered_map<int, Task> taskContentMap;
     std::string _taskName;
     std::vector<Tag> allTags;
+    std::string _path;
+    int _taskId;
 
     int lastOpenedWork = -1;
 
@@ -77,6 +81,14 @@ public:
         return QString::fromStdString(_taskName);
     }
 
+    QString path() {
+        return QString::fromStdString(_path);
+    }
+
+    int taskId() {
+        return _taskId;
+    }
+
     Q_INVOKABLE void addTaskGroup();
 
     Q_INVOKABLE void addTaskToGroup(int groupId);
@@ -110,6 +122,7 @@ signals:
     void workIdChanged();
     void controlWorkChanged();
     void taskNameChanged();
+    void taskIdChanged();
     void taskOpened(QString content, QString answer);
     void taskDeleted(int taskId);
 };

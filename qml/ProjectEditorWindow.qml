@@ -559,6 +559,8 @@ ApplicationWindow {
                 width: parent.width
 
                 tagsModel: editorComponent.taskTags
+                taskId: editorComponent.taskId
+                path: editorComponent.path
 
                 onSaveClicked: {
                     editorComponent.saveTask(selectedTaskId, taskEditor.content, taskEditor.answer)

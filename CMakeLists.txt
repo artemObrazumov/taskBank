@@ -38,6 +38,8 @@ qt_add_qml_module(taskBank
     SOURCES component/utils/TaskGroupsModel.h component/utils/TaskTabsModel.h component/utils/tasktagsmodel.h
     SOURCES models/Tag.h
     SOURCES
+    SOURCES component/utils/AttachmentSaver.cpp
+    SOURCES component/utils/AttachmentSaver.h
 )
 
 target_link_libraries(taskBank

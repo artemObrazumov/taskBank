@@ -2,14 +2,20 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Dialogs
+import Qt.labs.platform 1.1 as Platform
 import "."
 import utils.taskTagsModel
+import utils.attachmentSaver
 
 Rectangle {
     id: root
     color: "transparent"
-    height: taskTitle.height + taskTitleRect.height + tagsTitle.height + tagsContainer.height + answerTitle.height + taskAnswerRect.height + saveButton.height + 80
+    height: taskTitle.height + taskTitleRect.height + tagsTitle.height + tagsContainer.height + answerTitle.height + taskAnswerRect.height + saveButton.height
+            + attachmentTitle.height + attachmentContainer.height + attachmentButton.height + 124
 
+    property string path: ""
+    property int taskId: -1
+    property string attachmentPath: ""
     property alias content: taskTitleField.text
     property alias answer: taskAnswerField.text
     property TaskTagsModel tagsModel: TaskTagsModel {}
@@ -66,12 +72,110 @@ Rectangle {
     }
 
     Text {
+        id: attachmentTitle
+        text: "Приложение"
+        font.family: "Montserrat"
+        font.pixelSize: 14
+        color: "white"
+        anchors.top: taskTitleRect.bottom
+        anchors.topMargin: 24
+    }
+
+    Rectangle {
+        id: attachmentContainer
+        //height: attachmentPath !== "" ? 250 : 0
+        height: 250
+        width: parent.width / 2
+        color: "#1F2937"
+        border.color: "#374151"
+        border.width: 1
+        radius: 5
+        anchors.top: attachmentTitle.bottom
+        anchors.topMargin: 8
+        //visible: attachmentPath !== ""
+
+        Image {
+            id: photoImage
+            anchors.fill: parent
+            fillMode: Image.PreserveAspectFit
+            source: "file://" + root.path + "/attachment/" + root.taskId
+        }
+    }
+
+    Platform.FileDialog {
+        id: attachmentDialog
+        title: "Выбор картинки"
+        folder: Platform.StandardPaths.writableLocation(Platform.StandardPaths.PicturesLocation)
+        nameFilters: ["Изображения (*.png *.jpg *.jpeg)"]
+        onAccepted: {
+            var sourcePath = attachmentDialog.file.toString().replace("file://", "")
+            attachmentSaver.saveImageToAppDir(sourcePath)
+        }
+    }
+
+    AttachmentSaver {
+        id: attachmentSaver
+        onImageSaved: {
+            var oldSource = photoImage.source;
+            photoImage.source = "";
+            photoImage.source = oldSource;
+        }
+        taskId: root.taskId
+        path: root.path
+    }
+
+    Rectangle {
+        id: attachmentButton
+        color: bgColor
+        radius: 8
+        anchors.top: attachmentContainer.bottom
+        anchors.left: root.left
+        anchors.topMargin: 16
+        width: attachmentText.width + 32
+        height: attachmentText.height + 16
+
+        readonly property color unselectedColor: "#1F2937"
+        readonly property color selectedColor: "#253347"
+        property color bgColor: unselectedColor
+
+        Text {
+            id: attachmentText
+            text: "Изменить приложение"
+            color: "#fff"
+            font.family: "Montserrat"
+            font.pixelSize: 16
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.leftMargin: 16
+            anchors.topMargin: 8
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+
+            onEntered: {
+                parent.bgColor = parent.selectedColor;
+            }
+
+            onExited: {
+                parent.bgColor = parent.unselectedColor;
+            }
+
+            onClicked: {
+                attachmentDialog.open()
+            }
+        }
+    }
+
+    Text {
         id: tagsTitle
         text: "Категории"
         font.family: "Montserrat"
         font.pixelSize: 14
         color: "white"
-        anchors.top: taskTitleRect.bottom
+        anchors.top: attachmentButton.bottom
         anchors.topMargin: 24
     }
 
