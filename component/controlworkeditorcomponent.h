@@ -1,6 +1,7 @@
 #ifndef CONTROLWORKEDITORCOMPONENT_H
 #define CONTROLWORKEDITORCOMPONENT_H
 
+#include "component/utils/CheckBoxListModel.h"
 #include "component/utils/taskgroupsmodel.h"
 #include "component/utils/tasktabsmodel.h"
 #include "component/utils/tasktagsmodel.h"
@@ -20,6 +21,8 @@ class ControlWorkEditorComponent : public QObject {
     Q_PROPERTY(QString taskName READ taskName NOTIFY taskNameChanged)
     Q_PROPERTY(QString path READ path CONSTANT)
     Q_PROPERTY(int taskId READ taskId NOTIFY taskIdChanged)
+    Q_PROPERTY(CheckBoxListModel* taskGroupsCheckboxList READ taskGroupsCheckboxList CONSTANT)
+    Q_PROPERTY(CheckBoxListModel* taskTagsCheckboxList READ taskTagsCheckboxList CONSTANT)
 
 private:
 
@@ -37,6 +40,8 @@ private:
     std::vector<Tag> allTags;
     std::string _path;
     int _taskId;
+    CheckBoxListModel _taskGroupsCheckboxList;
+    CheckBoxListModel _taskTagsCheckboxList;
 
     int lastOpenedWork = -1;
 
@@ -89,6 +94,14 @@ public:
         return _taskId;
     }
 
+    CheckBoxListModel* taskGroupsCheckboxList() {
+        return &_taskGroupsCheckboxList;
+    }
+
+    CheckBoxListModel* taskTagsCheckboxList() {
+        return &_taskTagsCheckboxList;
+    }
+
     Q_INVOKABLE void addTaskGroup();
 
     Q_INVOKABLE void addTaskToGroup(int groupId);
@@ -112,6 +125,14 @@ public:
     Q_INVOKABLE void createTag(QString title);
 
     Q_INVOKABLE void deleteTag(int tagId);
+
+    Q_INVOKABLE void loadTaskGroupCheckboxes();
+
+    Q_INVOKABLE void loadTaskTagCheckboxes();
+
+    Q_INVOKABLE void toggleTagCheckbox(int id);
+
+    Q_INVOKABLE void toggleGroupCheckbox(int id);
 
 protected:
 

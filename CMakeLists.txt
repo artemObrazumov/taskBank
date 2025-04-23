@@ -25,7 +25,7 @@ qt_add_qml_module(taskBank
     SOURCES models/controlwork.h
     SOURCES component/controlworkscomponent.h component/controlworkscomponent.cpp
     QML_FILES qml/Container.qml qml/AddProjectWindow.qml qml/ProjectEditorWindow.qml qml/ConfirmationWindow.qml qml/TabsRow.qml qml/TaskEditor.qml
-        qml/TagsRow.qml qml/TagsWindow.qml qml/AddTagWindow.qml
+        qml/TagsRow.qml qml/TagsWindow.qml qml/AddTagWindow.qml qml/GenerateVariantsWindow.qml qml/CheckboxList.qml
     RESOURCES resources.qrc
     SOURCES  repositories/controlworkeditorrepository.cpp
     SOURCES models/task.h
@@ -40,6 +40,8 @@ qt_add_qml_module(taskBank
     SOURCES
     SOURCES component/utils/AttachmentSaver.cpp
     SOURCES component/utils/AttachmentSaver.h
+    SOURCES component/utils/CheckBoxListModel.h
+    SOURCES utils/controlworkpdfexporter.h utils/controlworkpdfexporter.cpp
 )
 
 target_link_libraries(taskBank

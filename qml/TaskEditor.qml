@@ -73,7 +73,7 @@ Rectangle {
 
     Text {
         id: attachmentTitle
-        text: "Приложение"
+        text: "Приложение\n(Внимание, приложение созраняется автоматически при изменении\nи перезаписывает старое)"
         font.family: "Montserrat"
         font.pixelSize: 14
         color: "white"
@@ -83,7 +83,6 @@ Rectangle {
 
     Rectangle {
         id: attachmentContainer
-        //height: attachmentPath !== "" ? 250 : 0
         height: 250
         width: parent.width / 2
         color: "#1F2937"
@@ -92,13 +91,13 @@ Rectangle {
         radius: 5
         anchors.top: attachmentTitle.bottom
         anchors.topMargin: 8
-        //visible: attachmentPath !== ""
 
         Image {
             id: photoImage
             anchors.fill: parent
             fillMode: Image.PreserveAspectFit
             source: "file://" + root.path + "/attachment/" + root.taskId
+            cache: false
         }
     }
 
@@ -116,9 +115,10 @@ Rectangle {
     AttachmentSaver {
         id: attachmentSaver
         onImageSaved: {
-            var oldSource = photoImage.source;
             photoImage.source = "";
-            photoImage.source = oldSource;
+            Qt.callLater(function() {
+                photoImage.source = "file://" + root.path + "/attachment/" + root.taskId;
+            });
         }
         taskId: root.taskId
         path: root.path
@@ -165,6 +165,52 @@ Rectangle {
 
             onClicked: {
                 attachmentDialog.open()
+            }
+        }
+    }
+
+    Rectangle {
+        id: deleteAttachmentButton
+        color: bgColor
+        radius: 8
+        anchors.top: attachmentContainer.bottom
+        anchors.left: attachmentButton.right
+        anchors.topMargin: 16
+        anchors.leftMargin: 16
+        width: deleteAttachmentText.width + 32
+        height: deleteAttachmentText.height + 16
+
+        readonly property color unselectedColor: "#1F2937"
+        readonly property color selectedColor: "#253347"
+        property color bgColor: unselectedColor
+
+        Text {
+            id: deleteAttachmentText
+            text: "Удалить"
+            color: "#fff"
+            font.family: "Montserrat"
+            font.pixelSize: 16
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.leftMargin: 16
+            anchors.topMargin: 8
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+
+            onEntered: {
+                parent.bgColor = parent.selectedColor;
+            }
+
+            onExited: {
+                parent.bgColor = parent.unselectedColor;
+            }
+
+            onClicked: {
+                attachmentSaver.deleteAttachment()
             }
         }
     }

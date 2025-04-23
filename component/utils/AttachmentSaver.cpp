@@ -31,3 +31,18 @@ QString AttachmentSaver::saveImageToAppDir(const QString &sourceFilePath) {
         return "";
     }
 }
+
+Q_INVOKABLE void AttachmentSaver::deleteAttachment() {
+    QString fileName = QString::fromStdString(std::to_string(this->_taskId) + ".jpg");
+    QString destDir = this->_path + "/attachment/";
+    QDir dir(destDir);
+    if (!dir.exists()) {
+        return;
+    }
+    QString destPath = destDir + fileName;
+    QFile destFile(destPath);
+    if (destFile.exists()) {
+        destFile.remove();
+    }
+    emit imageSaved(destPath);
+}

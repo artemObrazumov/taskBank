@@ -17,6 +17,8 @@ ApplicationWindow {
     property int selectedTaskId: -1
     property int selectedVariantId: -1
 
+    property bool isGenerateVariantsWindowOpened: false
+
     ControlWorkEditorComponent {
         id: editorComponent
         workId: 2
@@ -41,6 +43,15 @@ ApplicationWindow {
     FontLoader {
         id: montserratMedium
         source: "qrc:/font/Montserrat-Medium.ttf"
+    }
+
+    Rectangle {
+        id: overlay
+        anchors.fill: parent
+        color: "#000"
+        opacity: 0.5
+        z: 100
+        visible: isGenerateVariantsWindowOpened
     }
 
     Rectangle {
@@ -448,6 +459,7 @@ ApplicationWindow {
             height: addTaskRow.height
             color: bgColor
             radius: 10
+            visible: tab == 0
 
             Row {
                 id: addTaskRow
@@ -492,6 +504,69 @@ ApplicationWindow {
 
                 onClicked: {
                     editorComponent.addTaskGroup();
+                }
+            }
+        }
+
+        Rectangle {
+            id: generateVariantsBlock
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: 8
+            anchors.rightMargin: 8
+            anchors.bottomMargin: 8
+            height: generateVariantsRow.height
+            color: bgColor
+            radius: 10
+            visible: tab == 1
+
+            Row {
+                id: generateVariantsRow
+                height: generateVariantsTitle.height + 32
+                anchors.left: parent.left
+                anchors.leftMargin: 8
+                spacing: 10
+
+                Image {
+                    source: "qrc:/image/plus.svg"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Text {
+                    id: generateVariantsTitle
+                    text: "Cоздать варианты"
+                    font.family: montserratRegular.name
+                    font.weight: 500
+                    font.pointSize: 16
+                    color: "#fff"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+            }
+
+            readonly property color unselectedColor: "transparent"
+            readonly property color selectedColor: "#2B384A"
+            property color bgColor: unselectedColor
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+
+                onEntered: {
+                    parent.bgColor = parent.selectedColor;
+                }
+
+                onExited: {
+                    parent.bgColor = parent.unselectedColor;
+                }
+
+                onClicked: {
+                    editorComponent.loadTaskGroupCheckboxes()
+                    editorComponent.loadTaskTagCheckboxes()
+                    isGenerateVariantsWindowOpened = true
+                    variantsWindow.show()
                 }
             }
         }
@@ -595,6 +670,25 @@ ApplicationWindow {
 
         onTagAdded: function(title) {
             editorComponent.createTag(title)
+        }
+    }
+
+    GenerateVariantsWindow {
+        id: variantsWindow
+        visible: false
+        taskGroupsModel: editorComponent.taskGroupsCheckboxList
+        taskTagsModel: editorComponent.taskTagsCheckboxList
+
+        onCancelled: {
+            isGenerateVariantsWindowOpened = false
+        }
+
+        onCheckedGroup: function(id) {
+            editorComponent.toggleGroupCheckbox(id)
+        }
+
+        onCheckedTag: function(id) {
+            editorComponent.toggleTagCheckbox(id)
         }
     }
 }

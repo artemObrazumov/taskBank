@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<ControlWorksComponent>("components.controlWorks", 1, 0, "ControlWorksComponent");
     qmlRegisterType<ControlWorkEditorComponent>("components.controlWorkEditor", 1, 0, "ControlWorkEditorComponent");
     qmlRegisterType<TaskTagsModel>("utils.taskTagsModel", 1, 0, "TaskTagsModel");
+    qmlRegisterType<CheckBoxListModel>("utils.checkboxModel", 1, 0, "CheckBoxModel");
     qmlRegisterType<AttachmentSaver>("utils.attachmentSaver", 1, 0, "AttachmentSaver");
 
     QQmlApplicationEngine engine;

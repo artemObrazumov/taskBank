@@ -18,5 +18,7 @@
         <file>qml/TaskEditor.qml</file>
         <file>qml/TagsWindow.qml</file>
         <file>qml/AddTagWindow.qml</file>
+        <file>qml/GenerateVariantsWindow.qml</file>
+        <file>qml/CheckboxList.qml</file>
     </qresource>
 </RCC>

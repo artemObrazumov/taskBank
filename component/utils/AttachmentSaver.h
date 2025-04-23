@@ -15,6 +15,12 @@ private:
     QString _path;
     int _taskId;
 
+    QString destPath() {
+        QString fileName = QString::fromStdString(std::to_string(this->_taskId) + ".jpg");
+        QString destDir = this->_path + "/attachment/";
+        return destDir + fileName;
+    }
+
 public:
 
     explicit AttachmentSaver(QObject *parent = nullptr);
@@ -29,15 +35,19 @@ public:
 
     void newTaskId(int newId) {
         this->_taskId = newId;
+        emit imageSaved(destPath());
     }
 
     void newPath(QString newPath) {
         this->_path = newPath;
+        emit imageSaved(destPath());
     }
 
 public slots:
 
     QString saveImageToAppDir(const QString &sourceFilePath);
+
+    Q_INVOKABLE void deleteAttachment();
 
 signals:
 

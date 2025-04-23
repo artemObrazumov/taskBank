@@ -15,6 +15,14 @@ QVariantMap mapFromTag(Tag* tag) {
     return taskMap;
 }
 
+QVariantMap checkboxMap(int id, std::string title) {
+    QVariantMap checkboxMap;
+    checkboxMap["id"] = id;
+    checkboxMap["title"] = QString::fromStdString(title);
+    checkboxMap["checked"] = false;
+    return checkboxMap;
+}
+
 ControlWorkEditorComponent::ControlWorkEditorComponent() {}
 
 ControlWorkEditorComponent::~ControlWorkEditorComponent() {}
@@ -156,4 +164,26 @@ Q_INVOKABLE void ControlWorkEditorComponent::createTag(QString title) {
 
 Q_INVOKABLE void ControlWorkEditorComponent::deleteTag(int tagId) {
     _taskTags.deleteTag(tagId);
+}
+
+Q_INVOKABLE void ControlWorkEditorComponent::loadTaskGroupCheckboxes() {
+    std::vector<TaskGroup> groups = repository->getNotEmptyTaskGroups();
+    for(auto group{groups.begin()}; group != groups.end(); group++) {
+        _taskGroupsCheckboxList.addСheckbox(checkboxMap(group->id, "Задание " + std::to_string(group->index)));
+    }
+}
+
+Q_INVOKABLE void ControlWorkEditorComponent::loadTaskTagCheckboxes() {
+    std::vector<Tag> tags = repository->getNotEmptyTaskTags();
+    for(auto tag{tags.begin()}; tag != tags.end(); tag++) {
+        _taskTagsCheckboxList.addСheckbox(checkboxMap(tag->id, tag->name));
+    }
+}
+
+Q_INVOKABLE void ControlWorkEditorComponent::toggleTagCheckbox(int id) {
+    _taskTagsCheckboxList.toggleCheckbox(id);
+}
+
+Q_INVOKABLE void ControlWorkEditorComponent::toggleGroupCheckbox(int id) {
+    _taskGroupsCheckboxList.toggleCheckbox(id);
 }

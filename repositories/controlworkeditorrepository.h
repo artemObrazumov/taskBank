@@ -45,6 +45,9 @@ public:
     void deleteTaskTags(int taskId);
     void saveTaskTag(int taskId, int tagId);
     std::vector<Tag> getTaskTags(int taskId);
+    std::vector<TaskGroup> getNotEmptyTaskGroups();
+    std::vector<Tag> getNotEmptyTaskTags();
+    int generateAndSaveVariants(std::vector<int> groups, std::vector<int> tags, int variants);
 };
 
 #endif // CONTROLWORKEDITORREPOSITORY_H

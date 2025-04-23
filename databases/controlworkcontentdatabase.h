@@ -26,6 +26,9 @@ public:
     int createTagInDatabase(std::string title);
     void deleteTaskTags(int taskId);
     void saveTaskTag(int taskId, int tagId);
+    std::vector<TaskGroup> getNotEmptyTaskGroups();
+    std::vector<Tag> getNotEmptyTaskTags();
+    std::vector<TaskGroup> getRandomTasksFromGroups(std::vector<int> groups, std::vector<int> tags);
 };
 
 #endif // CONTROLWORKCONTENTDATABASE_H
