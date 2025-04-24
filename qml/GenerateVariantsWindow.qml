@@ -23,6 +23,7 @@ Window {
     signal cancelled()
     signal checkedGroup(int groupId)
     signal checkedTag(int tagId)
+    signal createVariants(int count)
 
     MouseArea {
         id: dragArea
@@ -273,10 +274,11 @@ Window {
                         }
 
                         onClicked: {
-                            addProjectWindow.close()
-                            windowClosed(
-                                repository.createControlWork(controlWorkTitleField.text.toString(), folderText.text.toString())
-                            )
+                            //generateVariantsWindow.close()
+                            var numberValue = parseInt(numberVariantsTitleField.text)
+                            if (isNaN(numberValue) === false) {
+                                generateVariantsWindow.createVariants(numberValue)
+                            }
                         }
                     }
 

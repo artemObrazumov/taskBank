@@ -690,5 +690,15 @@ ApplicationWindow {
         onCheckedTag: function(id) {
             editorComponent.toggleTagCheckbox(id)
         }
+
+        onCreateVariants: function(count) {
+            editorComponent.generateVariants(count)
+        }
+    }
+
+    Button {
+        onClicked: {
+            editorComponent.generateVariants()
+        }
     }
 }

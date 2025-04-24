@@ -404,3 +404,49 @@ std::vector<TaskGroup> ControlWorkContentDatabase::getRandomTasksFromGroups(std:
     sqlite3_finalize(stmt);
     return taskGroups;
 }
+
+int ControlWorkContentDatabase::saveVariant(std::vector<TaskGroup> taskGroups) {
+    int id = createVariant();
+    addTasksToVariant(id, taskGroups);
+    return id;
+}
+
+int ControlWorkContentDatabase::createVariant() {
+    const char* sql = "INSERT INTO variants DEFAULT VALUES";
+    sqlite3_stmt* stmt;
+    int id = -1;
+
+    if (sqlite3_prepare_v2(database, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            std::cerr << "Ошибка: " << sqlite3_errmsg(database) << std::endl;
+        } else {
+            id = sqlite3_last_insert_rowid(database);
+        }
+    } else {
+        std::cerr << "Ошибка: " << sqlite3_errmsg(database) << std::endl;
+    }
+
+    sqlite3_finalize(stmt);
+    return id;
+}
+
+void ControlWorkContentDatabase::addTasksToVariant(int id, std::vector<TaskGroup> taskGroups) {
+    for (int i = 0; i < taskGroups.size(); ++i) {
+        int taskId = taskGroups[i].tasks[0].id;
+        const char* sql = "INSERT INTO variant_tasks (variantId, taskId) VALUES (?, ?)";
+        sqlite3_stmt* stmt;
+
+        if (sqlite3_prepare_v2(database, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+            sqlite3_bind_int(stmt, 1, id);
+            sqlite3_bind_int(stmt, 2, taskId);
+            if (sqlite3_step(stmt) != SQLITE_DONE) {
+                std::cerr << "Ошибка: " << sqlite3_errmsg(database) << std::endl;
+            }
+        } else {
+            std::cerr << "Ошибка: " << sqlite3_errmsg(database) << std::endl;
+        }
+
+        sqlite3_finalize(stmt);
+    }
+}

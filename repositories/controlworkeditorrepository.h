@@ -7,6 +7,7 @@
 #include "databases/controlworkdatabase.h"
 #include "models/taskgroup.h"
 #include "utils/controlworkmetadataeditor.h"
+#include "utils/controlworkpdfexporter.h"
 
 class controlWorkEditorRepository
 {
@@ -15,6 +16,7 @@ private:
     ControlWorkDatabase database;
     ControlWorkContentDatabase* content = nullptr;
     ControlWorkMetadataEditor metadataEditor;
+    ControlWorkPdfExporter* controlWorkPdfExporter = nullptr;
     ControlWork* work;
     std::vector<TaskGroup> groups;
     std::vector<Tag> tags;
@@ -47,7 +49,7 @@ public:
     std::vector<Tag> getTaskTags(int taskId);
     std::vector<TaskGroup> getNotEmptyTaskGroups();
     std::vector<Tag> getNotEmptyTaskTags();
-    int generateAndSaveVariants(std::vector<int> groups, std::vector<int> tags, int variants);
+    int generateAndSaveVariants(std::vector<int> groups, std::vector<int> tags, int variants, std::string title);
 };
 
 #endif // CONTROLWORKEDITORREPOSITORY_H

@@ -61,6 +61,16 @@ public:
         endInsertRows();
     }
 
+    std::vector<int> getCheckedId() {
+        std::vector<int> ids;
+        for (int i = 0; i < _checkboxes.size(); ++i) {
+            if (_checkboxes[i]["checked"] == true) {
+                ids.push_back((_checkboxes[i]["id"].toInt()));
+            }
+        }
+        return ids;
+    }
+
 signals:
 
     void checkboxesChanged();

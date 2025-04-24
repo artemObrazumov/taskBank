@@ -9,6 +9,9 @@ class ControlWorkContentDatabase
 private:
 
     sqlite3* database;
+    int createVariant();
+    void addTasksToVariant(int id, std::vector<TaskGroup> taskGroups);
+
 public:
 
     ControlWorkContentDatabase(ControlWork &work);
@@ -29,6 +32,7 @@ public:
     std::vector<TaskGroup> getNotEmptyTaskGroups();
     std::vector<Tag> getNotEmptyTaskTags();
     std::vector<TaskGroup> getRandomTasksFromGroups(std::vector<int> groups, std::vector<int> tags);
+    int saveVariant(std::vector<TaskGroup> taskGroups);
 };
 
 #endif // CONTROLWORKCONTENTDATABASE_H

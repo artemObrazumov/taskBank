@@ -8,6 +8,26 @@ set(CMAKE_PREFIX_PATH "/win")
 
 find_package(Qt6 6.4 REQUIRED COMPONENTS Quick Svg)
 find_package(SQLite3 REQUIRED)
+
+find_path(HPDF_INCLUDE_DIR
+    NAMES hpdf.h
+    PATHS
+    /usr/local/include
+    /usr/include
+    /opt/homebrew/include  # Для Apple Silicon
+)
+
+find_library(HPDF_LIBRARY
+    NAMES hpdf
+    PATHS
+    /usr/local/lib
+    /usr/lib
+    /opt/homebrew/lib  # Для Apple Silicon
+)
+
+set(HPDF_INCLUDE_DIRS ${HPDF_INCLUDE_DIR})
+set(HPDF_LIBRARIES ${HPDF_LIBRARY})
+
 qt_standard_project_setup()
 
 set(RESOURCE_FILES
@@ -48,7 +68,11 @@ target_link_libraries(taskBank
     PRIVATE Qt6::Quick Qt6::Svg
 )
 target_link_libraries(taskBank
-    PRIVATE SQLite::SQLite3
+    PRIVATE SQLite::SQLite3 ${HPDF_LIBRARIES}
+)
+
+target_include_directories(taskBank
+    PRIVATE ${HPDF_INCLUDE_DIRS}
 )
 
 include(GNUInstallDirs)

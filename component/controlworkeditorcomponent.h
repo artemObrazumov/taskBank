@@ -28,6 +28,7 @@ private:
 
     controlWorkEditorRepository* repository = nullptr;
     int _workId;
+    std::string workTitle;
     QVariantMap _controlWork;
     void loadControlWork();
     void loadAllTags();
@@ -133,6 +134,8 @@ public:
     Q_INVOKABLE void toggleTagCheckbox(int id);
 
     Q_INVOKABLE void toggleGroupCheckbox(int id);
+
+    Q_INVOKABLE void generateVariants(int count);
 
 protected:
 

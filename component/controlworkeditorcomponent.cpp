@@ -38,6 +38,7 @@ void ControlWorkEditorComponent::loadControlWork() {
 
     ControlWork* work = repository->getControlWork();
     _controlWork["title"] = QString::fromStdString(work->title);
+    workTitle = work->title;
     this->_path = work->path + "/" + work->title;
     emit controlWorkChanged();
 
@@ -186,4 +187,10 @@ Q_INVOKABLE void ControlWorkEditorComponent::toggleTagCheckbox(int id) {
 
 Q_INVOKABLE void ControlWorkEditorComponent::toggleGroupCheckbox(int id) {
     _taskGroupsCheckboxList.toggleCheckbox(id);
+}
+
+Q_INVOKABLE void ControlWorkEditorComponent::generateVariants(int count) {
+    std::vector groups = _taskGroupsCheckboxList.getCheckedId();
+    std::vector tags = _taskTagsCheckboxList.getCheckedId();
+    repository->generateAndSaveVariants(groups, tags, count, this->workTitle);
 }

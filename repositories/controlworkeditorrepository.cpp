@@ -6,6 +6,7 @@ controlWorkEditorRepository::controlWorkEditorRepository(int workId): workId(wor
 
 void controlWorkEditorRepository::loadControlWork() {
     this->work = database.getControlWorkFromDatabase(this->workId);
+    controlWorkPdfExporter = new ControlWorkPdfExporter(*this->work);
     metadataEditor.validateControlWork(*this->work);
     content = new ControlWorkContentDatabase(*this->work);
     groups = content->getTaskGroupsFromDatabase(this->work->id);
@@ -69,7 +70,7 @@ std::vector<Tag> controlWorkEditorRepository::getNotEmptyTaskTags() {
 // 0 - ОК
 // -1 - Вариант собрался, но набор заданий неполный
 // -2 - Некоторые варианты не смогли собраться
-int controlWorkEditorRepository::generateAndSaveVariants(std::vector<int> groups, std::vector<int> tags, int variants) {
+int controlWorkEditorRepository::generateAndSaveVariants(std::vector<int> groups, std::vector<int> tags, int variants, std::string title) {
     int result = 0;
     for(int i = 0; i < variants; ++i) {
         std::vector<TaskGroup> taskGroups = content->getRandomTasksFromGroups(groups, tags);
@@ -79,7 +80,9 @@ int controlWorkEditorRepository::generateAndSaveVariants(std::vector<int> groups
         if (taskGroups.size() == 0) {
             if (result > -2) result = -2;
         } else {
-
+            int variantId = content->saveVariant(taskGroups);
+            controlWorkPdfExporter->exportVariant(variantId, taskGroups, title);
+            controlWorkPdfExporter->exportAnswers(variantId, taskGroups, title);
         }
     }
     return result;
