@@ -2,6 +2,7 @@
 #define CONTROLWORKCONTENTDATABASE_H
 
 #include "databases/controlworkdatabase.h"
+#include "models/Variant.h"
 #include "models/taskgroup.h"
 
 class ControlWorkContentDatabase
@@ -33,6 +34,8 @@ public:
     std::vector<Tag> getNotEmptyTaskTags();
     std::vector<TaskGroup> getRandomTasksFromGroups(std::vector<int> groups, std::vector<int> tags);
     int saveVariant(std::vector<TaskGroup> taskGroups);
+    std::vector<Variant> getVariantsFromDatabase();
+    std::vector<TaskGroup> getVariantTasks(int id);
 };
 
 #endif // CONTROLWORKCONTENTDATABASE_H

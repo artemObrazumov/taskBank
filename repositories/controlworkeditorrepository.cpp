@@ -87,3 +87,7 @@ int controlWorkEditorRepository::generateAndSaveVariants(std::vector<int> groups
     }
     return result;
 }
+
+std::vector<Variant> controlWorkEditorRepository::getVariants() {
+    return content->getVariantsFromDatabase();
+}

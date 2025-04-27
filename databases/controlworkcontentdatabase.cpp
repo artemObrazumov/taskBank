@@ -450,3 +450,44 @@ void ControlWorkContentDatabase::addTasksToVariant(int id, std::vector<TaskGroup
         sqlite3_finalize(stmt);
     }
 }
+
+std::vector<Variant> ControlWorkContentDatabase::getVariantsFromDatabase() {
+    const char* sql = "SELECT * FROM variants";
+    sqlite3_stmt* stmt;
+    std::vector<Variant> variants;
+
+    if (sqlite3_prepare_v2(this->database, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            int id = sqlite3_column_int(stmt, 0);
+            variants.emplace_back(Variant(id, id));
+        }
+    } else {
+        std::cerr << "Ошибка: " << sqlite3_errmsg(database) << std::endl;
+    }
+
+    sqlite3_finalize(stmt);
+    return variants;
+}
+
+std::vector<TaskGroup> ControlWorkContentDatabase::getVariantTasks(int id) {
+    const char* sql = "SELECT vt.variantId, t.id, t.content, t.answer, t.groupId "
+                      "FROM variant_tasks vt "
+                      "JOIN tasks t ON vt.taskId = t.id "
+                      "WHERE vt.variantId = ?;";
+    sqlite3_stmt* stmt;
+    std::vector<TaskGroup> groups;
+
+    if (sqlite3_prepare_v2(database, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, id);
+        while(sqlite3_step(stmt) == SQLITE_ROW) {
+            int taskId = sqlite3_column_int(stmt, 2);
+            const char* content = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+            const char* answer = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+            int groupId = sqlite3_column_int(stmt, 5);
+            groups.emplace_back( TaskGroup(groupId, groupId, { Task(taskId, content, answer) }) );
+        }
+    }
+
+    sqlite3_finalize(stmt);
+    return groups;
+}

@@ -20,5 +20,6 @@
         <file>qml/AddTagWindow.qml</file>
         <file>qml/GenerateVariantsWindow.qml</file>
         <file>qml/CheckboxList.qml</file>
+        <file>qml/VariantContent.qml</file>
     </qresource>
 </RCC>

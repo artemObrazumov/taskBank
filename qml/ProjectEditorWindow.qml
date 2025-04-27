@@ -388,59 +388,59 @@ ApplicationWindow {
             id: variantsContainer
             y: header.height + varinatsTab.height + 16
             width: parent.width
-            height: parent.height - addTaskBlock.height
+            height: parent.height - generateVariantsBlock.height
             color: "transparent"
             clip: true
 
             ListView {
                 anchors.fill: parent
-                model: variantsModel
+                model: editorComponent.variants
+                clip: true
                 delegate: Item {
-                    width: parent.width
-                    height: variantsColumn.height + 8
+                    width: variantsContainer.width
+                    height: variantContainer.height + 8
 
-                    Column {
-                        id: variantsColumn
-                        width: parent.width
-                        Rectangle {
-                            id: variantItemContainer
-                            width: parent.width - 16
+                    Rectangle {
+                        id: variantContainer
+                        width: parent.width - 16
+                        height: variantTitle.height + 16
+                        x: 8
+                        radius: 4
+                        color: "transparent"
+
+                        Row {
                             height: variantTitle.height + 16
-                            x: 8
-                            radius: 4
-                            color: "transparent"
+                            anchors.left: parent.left
+                            anchors.leftMargin: 8
+                            spacing: 10
 
                             Text {
                                 id: variantTitle
-                                text: title
+                                text: "Вариант " + model.variant.index
                                 font.family: montserratRegular.name
                                 font.weight: 500
                                 font.pointSize: 16
-                                anchors.left: parent.left
-                                anchors.right: parent.right
-                                anchors.margins: 8
-                                color: if (selectedVariantId == varId) { "#fff" } else { "#6B7280" }
+                                color: if (selectedVariantId == model.variant.id) { "#fff" } else { "#6B7280" }
                                 anchors.verticalCenter: parent.verticalCenter
                             }
+                        }
+                        MouseArea {
+                            width: parent.width
+                            height: parent.height
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            z: 1
 
-                            MouseArea {
-                                width: parent.width
-                                height: parent.height
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                z: 1
+                            onEntered: {
+                                parent.color = "#2B384A";
+                            }
 
-                                onEntered: {
-                                    parent.color = "#2B384A";
-                                }
+                            onExited: {
+                                parent.color = "transparent";
+                            }
 
-                                onExited: {
-                                    parent.color = "transparent";
-                                }
-
-                                onClicked: {
-                                    selectedVariantId = varId;
-                                }
+                            onClicked: {
+                                selectedVariantId = model.variant.id
                             }
                         }
                     }

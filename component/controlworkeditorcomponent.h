@@ -5,6 +5,7 @@
 #include "component/utils/taskgroupsmodel.h"
 #include "component/utils/tasktabsmodel.h"
 #include "component/utils/tasktagsmodel.h"
+#include "component/utils/variantsModel.h"
 #include "repositories/controlworkeditorrepository.h"
 #include <QObject>
 #include <QVariantList>
@@ -23,6 +24,7 @@ class ControlWorkEditorComponent : public QObject {
     Q_PROPERTY(int taskId READ taskId NOTIFY taskIdChanged)
     Q_PROPERTY(CheckBoxListModel* taskGroupsCheckboxList READ taskGroupsCheckboxList CONSTANT)
     Q_PROPERTY(CheckBoxListModel* taskTagsCheckboxList READ taskTagsCheckboxList CONSTANT)
+    Q_PROPERTY(VariantsModel* variants READ variants CONSTANT)
 
 private:
 
@@ -43,6 +45,7 @@ private:
     int _taskId;
     CheckBoxListModel _taskGroupsCheckboxList;
     CheckBoxListModel _taskTagsCheckboxList;
+    VariantsModel _variants;
 
     int lastOpenedWork = -1;
 
@@ -103,6 +106,10 @@ public:
         return &_taskTagsCheckboxList;
     }
 
+    VariantsModel* variants() {
+        return &_variants;
+    }
+
     Q_INVOKABLE void addTaskGroup();
 
     Q_INVOKABLE void addTaskToGroup(int groupId);
@@ -136,6 +143,8 @@ public:
     Q_INVOKABLE void toggleGroupCheckbox(int id);
 
     Q_INVOKABLE void generateVariants(int count);
+
+    Q_INVOKABLE void updateVariants();
 
 protected:
 

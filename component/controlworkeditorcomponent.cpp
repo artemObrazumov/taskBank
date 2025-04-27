@@ -15,6 +15,13 @@ QVariantMap mapFromTag(Tag* tag) {
     return taskMap;
 }
 
+QVariantMap mapFromVariant(Variant* variant) {
+    QVariantMap taskMap;
+    taskMap["id"] = variant->id;
+    taskMap["index"] = variant->index;
+    return taskMap;
+}
+
 QVariantMap checkboxMap(int id, std::string title) {
     QVariantMap checkboxMap;
     checkboxMap["id"] = id;
@@ -55,6 +62,8 @@ void ControlWorkEditorComponent::loadControlWork() {
         groupMap["taskVariants"] = QVariant::fromValue(tasks);
         _taskGroups.addGroup(groupMap);
     }
+
+    updateVariants();
 }
 
 void ControlWorkEditorComponent::loadAllTags() {
@@ -193,4 +202,14 @@ Q_INVOKABLE void ControlWorkEditorComponent::generateVariants(int count) {
     std::vector groups = _taskGroupsCheckboxList.getCheckedId();
     std::vector tags = _taskTagsCheckboxList.getCheckedId();
     repository->generateAndSaveVariants(groups, tags, count, this->workTitle);
+    updateVariants();
+}
+
+Q_INVOKABLE void ControlWorkEditorComponent::updateVariants() {
+    //std::vector<TaskGroup> groups = repository.getVariantTasks();
+    _variants.clearAll();
+    std::vector<Variant> variants = repository->getVariants();
+    for(auto variant{variants.begin()}; variant != variants.end(); variant++) {
+        _variants.addVariant(mapFromVariant(&*variant));
+    }
 }

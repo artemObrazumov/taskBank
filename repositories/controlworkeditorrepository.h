@@ -50,6 +50,7 @@ public:
     std::vector<TaskGroup> getNotEmptyTaskGroups();
     std::vector<Tag> getNotEmptyTaskTags();
     int generateAndSaveVariants(std::vector<int> groups, std::vector<int> tags, int variants, std::string title);
+    std::vector<Variant> getVariants();
 };
 
 #endif // CONTROLWORKEDITORREPOSITORY_H

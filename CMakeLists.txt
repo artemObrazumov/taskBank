@@ -55,13 +55,14 @@ qt_add_qml_module(taskBank
     SOURCES models/taskgroup.h
     SOURCES databases/controlworkcontentdatabase.h databases/controlworkcontentdatabase.cpp
     SOURCES component/controlworkeditorcomponent.h component/controlworkeditorcomponent.cpp
-    SOURCES component/utils/TaskGroupsModel.h component/utils/TaskTabsModel.h component/utils/tasktagsmodel.h
+    SOURCES component/utils/TaskGroupsModel.h component/utils/TaskTabsModel.h component/utils/tasktagsmodel.h component/utils/variantsModel.h
     SOURCES models/Tag.h
     SOURCES
     SOURCES component/utils/AttachmentSaver.cpp
     SOURCES component/utils/AttachmentSaver.h
     SOURCES component/utils/CheckBoxListModel.h
     SOURCES utils/controlworkpdfexporter.h utils/controlworkpdfexporter.cpp
+    SOURCES models/Variant.h
 )
 
 target_link_libraries(taskBank
