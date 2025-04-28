@@ -39,12 +39,7 @@ public:
         };
     }
 
-    void addVariant(QVariantMap groupMap) {
-        for (int i = 0; i < _groups.size(); ++i) {
-            if (_groups[i]["id"] == groupMap["id"]) {
-                return;
-            }
-        }
+    void addGroup(QVariantMap groupMap) {
         beginInsertRows(QModelIndex(), _groups.size(), _groups.size());
         _groups.append(groupMap);
         endInsertRows();

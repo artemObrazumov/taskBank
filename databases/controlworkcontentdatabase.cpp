@@ -480,10 +480,10 @@ std::vector<TaskGroup> ControlWorkContentDatabase::getVariantTasks(int id) {
     if (sqlite3_prepare_v2(database, sql, -1, &stmt, nullptr) == SQLITE_OK) {
         sqlite3_bind_int(stmt, 1, id);
         while(sqlite3_step(stmt) == SQLITE_ROW) {
-            int taskId = sqlite3_column_int(stmt, 2);
-            const char* content = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
-            const char* answer = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
-            int groupId = sqlite3_column_int(stmt, 5);
+            int taskId = sqlite3_column_int(stmt, 1);
+            const char* content = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+            const char* answer = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+            int groupId = sqlite3_column_int(stmt, 4);
             groups.emplace_back( TaskGroup(groupId, groupId, { Task(taskId, content, answer) }) );
         }
     }

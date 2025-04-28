@@ -440,7 +440,8 @@ ApplicationWindow {
                             }
 
                             onClicked: {
-                                selectedVariantId = model.variant.id
+                                selectedVariantId = model.variant.id;
+                                editorComponent.loadVariant(selectedVariantId);
                             }
                         }
                     }
@@ -581,6 +582,7 @@ ApplicationWindow {
     }
 
     Rectangle {
+        visible: (selectedTaskId != -1 && tab == 0)
         id: tabsRowContainer
         anchors.left: navigationBorder.right
         anchors.right: parent.right
@@ -612,7 +614,7 @@ ApplicationWindow {
     }
 
     ScrollView {
-        visible: selectedTaskId != -1
+        visible: (selectedTaskId != -1 && tab == 0)
         anchors.top: tabsRowContainer.bottom
         anchors.left: navigationBorder.right
         anchors.topMargin: 16
@@ -649,6 +651,35 @@ ApplicationWindow {
                 onTaskTagDeleted: function(tagId) {
                     editorComponent.deleteTag(tagId)
                 }
+            }
+        }
+    }
+
+    ScrollView {
+        visible: selectedVariantId != -1 && tab == 1
+        anchors.top: tabsRowContainer.bottom
+        anchors.left: navigationBorder.right
+        anchors.topMargin: 16
+        anchors.leftMargin: 8
+        clip: true
+        height: parent.height - tabsRowContainer.height - 48
+        width: parent.width - navigationSection.width - 16
+        contentHeight: variantContent.height + 16
+
+        Item {
+            id: variantWrapper
+            width: parent.width
+            height: variantContent.height
+            anchors.top: parent.top
+            anchors.left: parent.left
+
+            VariantContent {
+                id: variantContent
+                width: parent.width
+
+                groups: editorComponent.details
+                variantId: selectedVariantId
+                path: editorComponent.path
             }
         }
     }

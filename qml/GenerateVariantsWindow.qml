@@ -274,7 +274,6 @@ Window {
                         }
 
                         onClicked: {
-                            //generateVariantsWindow.close()
                             var numberValue = parseInt(numberVariantsTitleField.text)
                             if (isNaN(numberValue) === false) {
                                 generateVariantsWindow.createVariants(numberValue)

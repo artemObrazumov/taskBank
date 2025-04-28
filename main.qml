@@ -1,8 +1,9 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import QtQuick.Dialogs
 import components.controlWorks
-import "qml"
+import "."
 
 ApplicationWindow {
     visible: true
@@ -269,6 +270,7 @@ ApplicationWindow {
             isAddProjectWindowOpened = false;
         }
     }
+
 
     ProjectEditorWindow {
 

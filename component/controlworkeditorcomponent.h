@@ -2,6 +2,7 @@
 #define CONTROLWORKEDITORCOMPONENT_H
 
 #include "component/utils/CheckBoxListModel.h"
+#include "component/utils/groupDetailsModel.h"
 #include "component/utils/taskgroupsmodel.h"
 #include "component/utils/tasktabsmodel.h"
 #include "component/utils/tasktagsmodel.h"
@@ -25,6 +26,7 @@ class ControlWorkEditorComponent : public QObject {
     Q_PROPERTY(CheckBoxListModel* taskGroupsCheckboxList READ taskGroupsCheckboxList CONSTANT)
     Q_PROPERTY(CheckBoxListModel* taskTagsCheckboxList READ taskTagsCheckboxList CONSTANT)
     Q_PROPERTY(VariantsModel* variants READ variants CONSTANT)
+    Q_PROPERTY(GroupDetailsModel* details READ details CONSTANT)
 
 private:
 
@@ -46,6 +48,7 @@ private:
     CheckBoxListModel _taskGroupsCheckboxList;
     CheckBoxListModel _taskTagsCheckboxList;
     VariantsModel _variants;
+    GroupDetailsModel _details;
 
     int lastOpenedWork = -1;
 
@@ -110,41 +113,29 @@ public:
         return &_variants;
     }
 
+    GroupDetailsModel* details() {
+        return &_details;
+    }
+
     Q_INVOKABLE void addTaskGroup();
-
     Q_INVOKABLE void addTaskToGroup(int groupId);
-
     Q_INVOKABLE void deleteTask(int groupId, int taskId);
-
     Q_INVOKABLE void addTaskTab(int taskId);
-
     Q_INVOKABLE void saveLocally(int taskId, QString content, QString answer);
-
     Q_INVOKABLE void openTask(int taskId);
-
     Q_INVOKABLE void saveTask(int taskId, QString content, QString answer);
-
     Q_INVOKABLE void closeTaskTab(int taskId);
-
     Q_INVOKABLE void loadTagsList();
-
     Q_INVOKABLE void addTag(int tagId);
-
     Q_INVOKABLE void createTag(QString title);
-
     Q_INVOKABLE void deleteTag(int tagId);
-
     Q_INVOKABLE void loadTaskGroupCheckboxes();
-
     Q_INVOKABLE void loadTaskTagCheckboxes();
-
     Q_INVOKABLE void toggleTagCheckbox(int id);
-
     Q_INVOKABLE void toggleGroupCheckbox(int id);
-
     Q_INVOKABLE void generateVariants(int count);
-
     Q_INVOKABLE void updateVariants();
+    Q_INVOKABLE void loadVariant(int id);
 
 protected:
 

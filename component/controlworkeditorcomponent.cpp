@@ -22,6 +22,15 @@ QVariantMap mapFromVariant(Variant* variant) {
     return taskMap;
 }
 
+QVariantMap mapFromGroup(TaskGroup* group) {
+    QVariantMap taskMap;
+    taskMap["index"] = group->index;
+    taskMap["taskId"] = group->tasks[0].id;
+    taskMap["taskContent"] = QString::fromStdString(group->tasks[0].content);
+    taskMap["taskAnswer"] = QString::fromStdString(group->tasks[0].answer);
+    return taskMap;
+}
+
 QVariantMap checkboxMap(int id, std::string title) {
     QVariantMap checkboxMap;
     checkboxMap["id"] = id;
@@ -206,10 +215,17 @@ Q_INVOKABLE void ControlWorkEditorComponent::generateVariants(int count) {
 }
 
 Q_INVOKABLE void ControlWorkEditorComponent::updateVariants() {
-    //std::vector<TaskGroup> groups = repository.getVariantTasks();
     _variants.clearAll();
     std::vector<Variant> variants = repository->getVariants();
     for(auto variant{variants.begin()}; variant != variants.end(); variant++) {
         _variants.addVariant(mapFromVariant(&*variant));
+    }
+}
+
+Q_INVOKABLE void ControlWorkEditorComponent::loadVariant(int id) {
+    _details.clearAll();
+    std::vector<TaskGroup> groups = repository->getVariantGroups(id);
+    for(auto group{groups.begin()}; group != groups.end(); group++) {
+        _details.addGroup(mapFromGroup(&*group));
     }
 }
