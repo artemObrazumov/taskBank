@@ -21,5 +21,6 @@
         <file>qml/GenerateVariantsWindow.qml</file>
         <file>qml/CheckboxList.qml</file>
         <file>qml/VariantContent.qml</file>
+        <file>qml/ProjectsWindow.qml</file>
     </qresource>
 </RCC>

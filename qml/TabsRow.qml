@@ -25,7 +25,7 @@ ListView {
         Text {
             id: title
             text: model.tabData.title === "" ? "Нет названия" : model.tabData.title
-            width: tab.width - 32
+            width: tab.width - 40
             anchors.left: parent.left
             anchors.leftMargin: 16
             anchors.top: parent.top
@@ -33,8 +33,10 @@ ListView {
             font.pixelSize: 16
             font.family: montserratRegular.name
             font.weight: 500
+            color: model.tabData.taskId === selectedTaskId ? "#fff" : "#9CA3AF"
+            wrapMode: Text.NoWrap
             elide: Text.ElideRight
-            color: if (model.tabData.taskId === selectedTaskId) { "#fff" } else { "#9CA3AF" }
+            maximumLineCount: 1
         }
 
         Component.onCompleted: {

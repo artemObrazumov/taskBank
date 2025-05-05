@@ -21,7 +21,7 @@ class ControlWorkEditorComponent : public QObject {
     Q_PROPERTY(TaskTagsModel* tagsSelectList READ tagsSelectList CONSTANT)
     Q_PROPERTY(TaskTagsModel* taskTags READ taskTags CONSTANT)
     Q_PROPERTY(QString taskName READ taskName NOTIFY taskNameChanged)
-    Q_PROPERTY(QString path READ path CONSTANT)
+    Q_PROPERTY(QString path READ path NOTIFY pathChanged)
     Q_PROPERTY(int taskId READ taskId NOTIFY taskIdChanged)
     Q_PROPERTY(CheckBoxListModel* taskGroupsCheckboxList READ taskGroupsCheckboxList CONSTANT)
     Q_PROPERTY(CheckBoxListModel* taskTagsCheckboxList READ taskTagsCheckboxList CONSTANT)
@@ -149,6 +149,7 @@ signals:
     void taskIdChanged();
     void taskOpened(QString content, QString answer);
     void taskDeleted(int taskId);
+    void pathChanged();
 };
 
 #endif // CONTROLWORKEDITORCOMPONENT_H

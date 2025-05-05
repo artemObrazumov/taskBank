@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <filesystem>
 
 ControlWorkPdfExporter::ControlWorkPdfExporter(ControlWork work) {
     this->outputPath = work.path + "/" + work.title;
@@ -99,7 +100,7 @@ void error_handler(HPDF_STATUS error_no, HPDF_STATUS detail_no, void* user_data)
     std::cerr << "PDF Error: " << error_no << " (Detail: " << detail_no << ")" << std::endl;
 }
 
-void printTask(HPDF_Doc pdf, HPDF_Page page, HPDF_Font font, TaskGroup group, float &y, float line_height, const float x = 50) {
+void printTask(HPDF_Doc pdf, HPDF_Page page, HPDF_Font font, TaskGroup group, float &y, float line_height, std::string attachmentPath, int taskId, const float x = 50) {
     std::string task_header = "Задание №" + std::to_string(group.index);
     HPDF_Page_BeginText(page);
     HPDF_Page_MoveTextPos(page, x, y);
@@ -107,6 +108,39 @@ void printTask(HPDF_Doc pdf, HPDF_Page page, HPDF_Font font, TaskGroup group, fl
     HPDF_Page_EndText(page);
     y -= line_height;
     draw_advanced_text(pdf, page, font, x, y, group.tasks[0].content, line_height);
+
+    std::string imagePath = attachmentPath + std::to_string(taskId) + ".png";
+
+    if (std::filesystem::exists(imagePath)) {
+        try {
+            HPDF_Image image = HPDF_LoadPngImageFromFile(pdf, imagePath.c_str());
+            float img_width = HPDF_Image_GetWidth(image);
+            float img_height = HPDF_Image_GetHeight(image);
+
+            float max_width = HPDF_Page_GetWidth(page) - 2 * x;
+
+            float scale = 1.0f;
+            if (img_width > max_width) {
+                scale = max_width / img_width;
+                img_width *= scale;
+                img_height *= scale;
+            }
+
+            if (y - img_height < 50) {
+                page = HPDF_AddPage(pdf);
+                HPDF_Page_SetSize(page, HPDF_PAGE_SIZE_A4, HPDF_PAGE_PORTRAIT);
+                HPDF_Page_SetFontAndSize(page, font, 14);
+                y = HPDF_Page_GetHeight(page) - 50;
+            }
+
+            HPDF_Page_DrawImage(page, image, x, y - img_height, img_width, img_height);
+            y -= img_height + line_height;
+
+        } catch (...) {
+            std::cerr << "Failed to load image: " << imagePath << std::endl;
+        }
+    }
+
     y -= line_height;
 }
 
@@ -144,7 +178,7 @@ int ControlWorkPdfExporter::exportVariant(int id, std::vector<TaskGroup> groups,
     line_height = 16;
 
     for (const auto& group : groups) {
-        printTask(pdf, page, font, group, y, line_height, margin);
+        printTask(pdf, page, font, group, y, line_height, this->outputPath + "/attachment/", group.tasks[0].id, margin);
     }
 
     std::string variantsPath = this->outputPath + "/variants/";

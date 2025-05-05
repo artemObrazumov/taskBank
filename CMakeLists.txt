@@ -50,6 +50,7 @@ qt_add_qml_module(taskBank
         qml/GenerateVariantsWindow.qml
         qml/CheckboxList.qml
         qml/VariantContent.qml
+        qml/ProjectsWindow.qml
     RESOURCES resources.qrc
     SOURCES
         nlohmann/json.hpp

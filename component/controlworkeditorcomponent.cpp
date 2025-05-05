@@ -56,6 +56,7 @@ void ControlWorkEditorComponent::loadControlWork() {
     _controlWork["title"] = QString::fromStdString(work->title);
     workTitle = work->title;
     this->_path = work->path + "/" + work->title;
+    emit pathChanged();
     emit controlWorkChanged();
 
     std::vector<TaskGroup> groups = repository->getTaskGroups();
@@ -65,7 +66,7 @@ void ControlWorkEditorComponent::loadControlWork() {
         groupMap["index"] = group->index;
         groupMap["show"] = false;
         QList<QVariantMap> tasks;
-        for(auto task{group->tasks.begin()}; task != group->tasks.end(); task++ ) {
+        for(auto task{group->tasks.begin()}; task != group->tasks.end(); task++) {
             tasks.append(mapFromTask(&*task));
         }
         groupMap["taskVariants"] = QVariant::fromValue(tasks);

@@ -5,13 +5,10 @@ import components.controlWorkEditor
 import QtQuick.Dialogs
 import "."
 
-ApplicationWindow {
+Item {
     id: root
-    visible: true
-    width: 1200
-    height: 700
-    title: "Редактор контрольных работ"
-    color: "#111827"
+
+    property int workId: -1
 
     property int tab: 0
     property int selectedTaskId: -1
@@ -21,7 +18,7 @@ ApplicationWindow {
 
     ControlWorkEditorComponent {
         id: editorComponent
-        workId: 2
+        workId: root.workId
 
         onTaskOpened: function(content, answer) {
             taskEditor.content = content;
@@ -310,16 +307,20 @@ ApplicationWindow {
                                     id: taskVariantTitle
                                     text: modelData.content ? modelData.content : "Нет названия"
                                     anchors.left: parent.left
-                                    anchors.right: parent.right
+                                    anchors.right: crossImage.left
                                     anchors.margins: 8
                                     anchors.top: parent.top
                                     font.family: montserratRegular.name
                                     font.weight: 500
                                     font.pointSize: 16
                                     color: if (selectedTaskId === modelData.taskId) { "#fff" } else { "#6B7280" }
+                                    wrapMode: Text.NoWrap
+                                    elide: Text.ElideRight
+                                    maximumLineCount: 1
                                 }
 
                                 Image {
+                                    id: crossImage
                                     source: "qrc:/image/cross.svg"
                                     anchors.verticalCenter: parent.verticalCenter
                                     anchors.right: parent.right
@@ -388,7 +389,7 @@ ApplicationWindow {
             id: variantsContainer
             y: header.height + varinatsTab.height + 16
             width: parent.width
-            height: parent.height - generateVariantsBlock.height
+            height: parent.height - generateVariantsBlock.height - header.height - tabsBlock.height - 32
             color: "transparent"
             clip: true
 
@@ -724,12 +725,6 @@ ApplicationWindow {
 
         onCreateVariants: function(count) {
             editorComponent.generateVariants(count)
-        }
-    }
-
-    Button {
-        onClicked: {
-            editorComponent.generateVariants()
         }
     }
 }
