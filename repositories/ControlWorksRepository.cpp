@@ -17,6 +17,10 @@ std::vector<ControlWork> ControlWorksRepository::getControlWorks() {
     return works;
 }
 
+ControlWork* ControlWorksRepository::getControlWork(int id) {
+    return this->database.getControlWorkFromDatabase(id);
+}
+
 unsigned int ControlWorksRepository::createControlWork(std::string title, std::string path) {
 
     int id = -1;
@@ -28,20 +32,6 @@ unsigned int ControlWorksRepository::createControlWork(std::string title, std::s
     return id;
 }
 
-// void ControlWorksRepository::updateControlWorkTitle(int id, std::string newTitle) {
-//     const char* sql = "UPDATE control_works SET title = ? WHERE id = ?;";
-//     sqlite3_stmt* stmt;
-
-//     if (sqlite3_prepare_v2(database, sql, -1, &stmt, nullptr) == SQLITE_OK) {
-//         sqlite3_bind_text(stmt, 0, newTitle.c_str(), -1, SQLITE_STATIC);
-//         sqlite3_bind_int(stmt, 1, id);
-
-//         if (sqlite3_step(stmt) != SQLITE_DONE) {
-//             std::cerr << "Execution failed: " << sqlite3_errmsg(database) << std::endl;
-//         }
-//     } else {
-//         std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(database) << std::endl;
-//     }
-
-//     sqlite3_finalize(stmt);
-// }
+unsigned int ControlWorksRepository::addControlWork(std::string title, std::string path) {
+    return this->database.createControlWork(title, path);
+}

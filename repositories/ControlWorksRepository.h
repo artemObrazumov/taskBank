@@ -16,8 +16,10 @@ public:
     ~ControlWorksRepository();
 
     std::vector<ControlWork> getControlWorks();
+    ControlWork* getControlWork(int id);
     unsigned int createControlWork(std::string title, std::string path);
     void updateControlWorkTitle(int id, std::string newTitle);
+    unsigned int addControlWork(std::string title, std::string path);
 };
 
 #endif // CONTROLWORKSREPOSITORY_H

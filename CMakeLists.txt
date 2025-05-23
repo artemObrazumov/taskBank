@@ -8,6 +8,7 @@ set(CMAKE_PREFIX_PATH "/win")
 
 find_package(Qt6 6.4 REQUIRED COMPONENTS Quick Svg)
 find_package(SQLite3 REQUIRED)
+find_package(QuaZip-Qt6 REQUIRED)
 
 find_path(HPDF_INCLUDE_DIR
     NAMES hpdf.h
@@ -51,6 +52,8 @@ qt_add_qml_module(taskBank
         qml/CheckboxList.qml
         qml/VariantContent.qml
         qml/ProjectsWindow.qml
+        qml/ExportArchiveWindow.qml
+        qml/ImportArchiveWindow.qml
     RESOURCES resources.qrc
     SOURCES
         nlohmann/json.hpp
@@ -83,6 +86,7 @@ qt_add_qml_module(taskBank
         utils/controlworkpdfexporter.h
         utils/controlworkpdfexporter.cpp
         models/Variant.h
+        SOURCES utils/controlworkarchivemanager.h utils/controlworkarchivemanager.cpp
 )
 
 target_link_libraries(taskBank
@@ -95,6 +99,8 @@ target_link_libraries(taskBank
 target_include_directories(taskBank
     PRIVATE ${HPDF_INCLUDE_DIRS}
 )
+target_link_libraries(taskBank
+    PRIVATE QuaZip::QuaZip)
 
 include(GNUInstallDirs)
 install(TARGETS taskBank

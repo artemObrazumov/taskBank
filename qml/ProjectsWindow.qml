@@ -107,29 +107,67 @@ Item {
                                 Layout.alignment: Qt.AlignLeft | Qt.AlignTop
 
                                 Item {
+                                    id: crossIcon
+                                    width: crossIconImage.width
+                                    height: crossIconImage.height
+                                    anchors.top: parent.top
+                                    anchors.right: parent.right
+                                    anchors.topMargin: 20
+                                    anchors.rightMargin: 20
+                                    z: 4
+
+                                    Image {
+                                        id: crossIconImage
+                                        source: "qrc:/image/cross.svg"
+                                    }
+
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        propagateComposedEvents: true
+                                        z: 4
+                                    }
+                                }
+
+                                Item {
+                                    id: exportIcon
+                                    width: exportIconImage.width
+                                    height: exportIconImage.height
+                                    anchors.top: parent.top
+                                    anchors.right: crossIcon.right
+                                    anchors.topMargin: 20
+                                    anchors.rightMargin: 18
+                                    z: 4
+
+                                    Image {
+                                        width: 14
+                                        height: 14
+                                        id: exportIconImage
+                                        source: "qrc:/image/upload.svg"
+                                    }
+
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        propagateComposedEvents: true
+
+                                        onClicked: {
+                                            if (modelData.isValid === false) return
+                                            exportArchiveWindow.workId = modelData.id
+                                            exportArchiveWindow.show()
+                                        }
+                                    }
+                                }
+
+                                Item {
                                     id: workContent
                                     height: workContentColumn.height + 40
                                     anchors.top: parent.top
                                     anchors.right: parent.right
                                     anchors.left: parent.left
                                     anchors.margins: 20
-
-                                    Rectangle {
-                                        anchors.top: parent.top
-                                        anchors.right: parent.right
-                                        anchors.rightMargin: 12
-
-                                        Image {
-                                            source: "qrc:/image/cross.svg"
-                                        }
-
-                                        MouseArea {
-                                            anchors.fill: parent
-                                            hoverEnabled: true
-                                            cursorShape: Qt.PointingHandCursor
-                                            z: 2
-                                        }
-                                    }
 
                                     ColumnLayout {
                                         id: workContentColumn
@@ -274,10 +312,73 @@ Item {
         }
     }
 
+    Container {
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.rightMargin: 100
+        anchors.bottomMargin: 20
+        implicitWidth: 64
+        implicitHeight: 64
+        color: bgColor
+
+        readonly property color unselectedColor: "#2563EB"
+        readonly property color selectedColor: "#4680FF"
+        property color bgColor: unselectedColor
+
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+
+            onEntered: {
+                parent.bgColor = parent.selectedColor;
+            }
+
+            onExited: {
+                parent.bgColor = parent.unselectedColor;
+            }
+
+            onClicked: {
+                importArchiveWindow.show();
+                isAddProjectWindowOpened = true;
+            }
+        }
+
+        Image {
+            id: importImage
+            width: 48
+            height: 48
+            source: "qrc:/image/import.svg"
+            anchors.centerIn: parent
+        }
+    }
+
     AddProjectWindow {
         id: newProjectWindow
-        onWindowClosed: {
+        onWindowClosed: function(id) {
+            if (id !== -1) {
+                workOpened(id);
+            }
+
             isAddProjectWindowOpened = false;
+        }
+    }
+
+    ExportArchiveWindow {
+        id: exportArchiveWindow
+
+        onWindowClosed: function(id, path) {
+            repository.archiveWork(id, path)
+        }
+    }
+
+    ImportArchiveWindow {
+        id: importArchiveWindow
+
+        onWindowClosed: function(id, path) {
+            isAddProjectWindowOpened = false;
+            console.log(id, path);
+            repository.importWork(id, path)
         }
     }
 }

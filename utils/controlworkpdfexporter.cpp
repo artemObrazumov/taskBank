@@ -2,7 +2,6 @@
 #include "models/controlwork.h"
 #include <iostream>
 #include <sstream>
-#include <fstream>
 #include <filesystem>
 
 ControlWorkPdfExporter::ControlWorkPdfExporter(ControlWork work) {
@@ -137,7 +136,7 @@ void printTask(HPDF_Doc pdf, HPDF_Page page, HPDF_Font font, TaskGroup group, fl
             y -= img_height + line_height;
 
         } catch (...) {
-            std::cerr << "Failed to load image: " << imagePath << std::endl;
+            std::cerr << "Ошибка при загрузке изображения: " << imagePath << std::endl;
         }
     }
 

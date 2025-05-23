@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/artem/Documents/qt/taskBank/databases",
+      "program": "/Users/artem/Documents/qt/taskBank/databases/build/Debug/outDebug"
+    }
+  ]
+}

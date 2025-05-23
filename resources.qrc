@@ -22,5 +22,10 @@
         <file>qml/CheckboxList.qml</file>
         <file>qml/VariantContent.qml</file>
         <file>qml/ProjectsWindow.qml</file>
+        <file>image/upload.svg</file>
+        <file>image/import.svg</file>
+        <file>qml/ExportArchiveWindow.qml</file>
     </qresource>
+    <qresource prefix="/new/prefix1"/>
+    <qresource prefix="/new/prefix2"/>
 </RCC>
